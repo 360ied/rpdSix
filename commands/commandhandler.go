@@ -44,9 +44,11 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 
 	var endIndex = strings.Index(message.Content, stringSeparator)
 
-	var commandName = message.Content[len(prefix):]
+	var commandName string
 
-	if endIndex != -1 {
+	if endIndex == -1 {
+		commandName = message.Content[len(prefix):]
+	} else {
 		commandName = message.Content[
 			len(prefix):strings.Index(message.Content, stringSeparator)]
 	}
