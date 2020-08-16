@@ -16,8 +16,7 @@ type Command struct {
 	Run                         func(ctx CommandContext)
 	Names                       []string
 	ExpectedPositionalArguments []string
-	// The first element is taken as the map
-	keywordArgumentAliases map[string]string
+	keywordArgumentAliases      map[string]string
 }
 
 var Commands map[string]Command
