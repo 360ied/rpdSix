@@ -45,7 +45,7 @@ func main() {
 }
 
 func ready(s *discordgo.Session, event *discordgo.Ready) {
-	err := s.UpdateStatus(0, "FUCK PYTHON I AM NOW A GO CODER")
+	err := s.UpdateStatus(0, "golang")
 	if err != nil {
 		fmt.Println("Error updating status: ", err)
 	}
