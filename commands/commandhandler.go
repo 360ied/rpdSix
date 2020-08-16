@@ -16,7 +16,7 @@ type Command struct {
 	Run                         func(ctx CommandContext)
 	Names                       []string
 	ExpectedPositionalArguments []string
-	keywordArgumentAliases      map[string]string
+	KeywordArgumentAliases      map[string]string
 }
 
 var Commands map[string]Command
@@ -65,7 +65,7 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 		Arguments: parseArguments(
 			message.Content,
 			command.ExpectedPositionalArguments,
-			command.keywordArgumentAliases),
+			command.KeywordArgumentAliases),
 	}
 
 	go command.Run(context)
