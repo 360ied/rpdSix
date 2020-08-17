@@ -5,13 +5,14 @@ import (
 	"github.com/3sixtyied/rpdSix/commands"
 	"github.com/3sixtyied/rpdSix/commands/pingcommand"
 	"github.com/3sixtyied/rpdSix/commands/saycommand"
+	"github.com/3sixtyied/rpdSix/keepalive"
 	"github.com/bwmarrin/discordgo"
 	"os"
 )
 
 func main() {
 	// so that repl.it won't exit after the page is closed
-	go KeepAlive()
+	go keepalive.KeepAlive()
 
 	bot, err := discordgo.New("Bot " + os.Getenv("TOKEN"))
 
