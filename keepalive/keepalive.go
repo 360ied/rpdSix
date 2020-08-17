@@ -2,6 +2,7 @@ package keepalive
 
 import (
 	"fmt"
+	"github.com/ztrue/tracerr"
 	"net/http"
 )
 
@@ -10,7 +11,7 @@ func KeepAlive() {
 		_, err := fmt.Fprintf(w, "I'm alive")
 
 		if err != nil {
-			panic(err)
+			tracerr.PrintSourceColor(err)
 		}
 	})
 
