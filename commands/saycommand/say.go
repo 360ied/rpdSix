@@ -1,8 +1,8 @@
 package saycommand
 
 import (
-	"github.com/3sixtyied/rpdSix/commands"
 	"github.com/ztrue/tracerr"
+	"rpdSix/commands"
 )
 
 func Initialize() {

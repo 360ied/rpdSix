@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/3sixtyied/rpdSix/commands"
-	"github.com/3sixtyied/rpdSix/commands/pingcommand"
-	"github.com/3sixtyied/rpdSix/commands/saycommand"
-	"github.com/3sixtyied/rpdSix/keepalive"
 	"github.com/bwmarrin/discordgo"
 	"os"
+	"rpdSix/commands"
+	"rpdSix/commands/pingcommand"
+	"rpdSix/commands/saycommand"
+	"rpdSix/keepalive"
 )
 
 func main() {
