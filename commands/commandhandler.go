@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"strings"
 )
@@ -21,11 +20,12 @@ type Command struct {
 
 var Commands map[string]Command
 
+// Initialize the Commands map
 func InitCommands() {
 	Commands = make(map[string]Command)
 }
 
-// Adds a command to the commands map
+// Adds a command to the Commands map
 func AddCommand(command Command) {
 	for _, name := range command.Names {
 		Commands[name] = command
@@ -34,6 +34,7 @@ func AddCommand(command Command) {
 
 const prefix = "'"
 
+// Handle a message creation event
 func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate) {
 	if message.Author.ID == session.State.User.ID {
 		return
@@ -53,7 +54,7 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 			len(prefix):strings.Index(message.Content, stringSeparator)]
 	}
 
-	fmt.Println(commandName) // debug
+	// fmt.Println(commandName) // debug
 
 	command, exists := Commands[commandName]
 
@@ -78,7 +79,7 @@ const keywordArgumentPrefix = "--"
 
 const stringSeparator = " "
 
-// parse command arguments
+// Parse command arguments
 func parseArguments(
 	content string,
 	expectedPositionalArguments []string,
@@ -116,7 +117,7 @@ func parseArguments(
 					expectedPositionalArguments[
 						len(expectedPositionalArguments)-1]]
 				if exists {
-					// bcz it shouldn't ever be nil
+					// The length checks should prevent the value from being nil
 					//goland:noinspection GoNilness
 					returnArguments[
 						expectedPositionalArguments[
