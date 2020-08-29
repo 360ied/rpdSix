@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"log"
 	"os"
 	"rpdSix/commands"
 	"rpdSix/commands/helpcommand"
@@ -35,7 +36,7 @@ func main() {
 	err = bot.Open()
 
 	if err != nil {
-		fmt.Println("Error opening Discord session: ", err)
+		log.Fatalln("Error opening Discord session: ", err)
 	}
 
 	fmt.Println("Bot is now running.")
