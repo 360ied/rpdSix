@@ -99,7 +99,7 @@ func parseArguments(
 	var currentPosition = 0
 
 	for len(separated) > 0 {
-		// emulate pop
+		// remove first element from slice
 		var currentItem = separated[0]
 		separated = separated[1:]
 
