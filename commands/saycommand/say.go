@@ -10,13 +10,17 @@ func Initialize() {
 		commands.Command{
 			Run:                         run,
 			Names:                       []string{"say"},
-			ExpectedPositionalArguments: []string{"toSay"},
+			ExpectedPositionalArguments: []string{toSayArg},
 		},
 	)
 }
 
+const (
+	toSayArg = "toSay"
+)
+
 func run(ctx commands.CommandContext) {
-	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, ctx.Arguments["toSay"])
+	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, ctx.Arguments[toSayArg])
 	if err != nil {
 		tracerr.PrintSourceColor(err)
 	}

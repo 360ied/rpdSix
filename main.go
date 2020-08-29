@@ -5,6 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"os"
 	"rpdSix/commands"
+	"rpdSix/commands/helpcommand"
 	"rpdSix/commands/pingcommand"
 	"rpdSix/commands/saycommand"
 	"rpdSix/keepalive"
@@ -29,6 +30,7 @@ func main() {
 	// register commands
 	pingcommand.Initialize()
 	saycommand.Initialize()
+	helpcommand.Initialize()
 
 	err = bot.Open()
 
