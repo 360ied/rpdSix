@@ -47,14 +47,14 @@ func main() {
 	// bot.Close()
 }
 
-func ready(s *discordgo.Session, event *discordgo.Ready) {
-	err := s.UpdateStatus(0, "golang")
+func ready(session *discordgo.Session, event *discordgo.Ready) {
+	err := session.UpdateStatus(0, "golang")
 	if err != nil {
 		fmt.Println("Error updating status: ", err)
 	}
-	fmt.Println("Logged in as user " + s.State.User.ID)
+	fmt.Println("Logged in as user " + session.State.User.ID)
 }
 
-func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	go commands.HandleMessage(s, m)
+func messageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
+	go commands.HandleMessage(session, event)
 }
