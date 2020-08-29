@@ -5,6 +5,16 @@ import (
 	"strings"
 )
 
+const (
+	prefix                = "'"
+	keywordArgumentPrefix = "--"
+	stringSeparator       = " "
+)
+
+var (
+	Commands map[string]Command
+)
+
 type CommandContext struct {
 	Session   *discordgo.Session
 	Message   *discordgo.MessageCreate
@@ -18,8 +28,6 @@ type Command struct {
 	KeywordArgumentAliases      map[string]string
 }
 
-var Commands map[string]Command
-
 // Initialize the Commands map
 func InitCommands() {
 	Commands = make(map[string]Command)
@@ -31,8 +39,6 @@ func AddCommand(command Command) {
 		Commands[name] = command
 	}
 }
-
-const prefix = "'"
 
 // Handle a message creation event
 func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate) {
@@ -72,12 +78,7 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 	}
 
 	go command.Run(context)
-
 }
-
-const keywordArgumentPrefix = "--"
-
-const stringSeparator = " "
 
 // Parse command arguments
 func parseArguments(
@@ -149,5 +150,4 @@ func parseArguments(
 	}
 
 	return returnArguments
-
 }
