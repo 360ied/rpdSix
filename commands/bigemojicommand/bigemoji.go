@@ -142,7 +142,11 @@ func run(ctx commands.CommandContext) error {
 		//emojis = append(emojis, row)
 	}
 
-	var _, err3 = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, messageString)
+	var _, err3 = ctx.Session.ChannelMessageSend(
+		ctx.Message.ChannelID,
+		fmt.Sprint(
+			"Copy the text below:\n",
+			messageString))
 
 	return err3
 }
