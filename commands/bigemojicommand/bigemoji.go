@@ -51,8 +51,10 @@ func run(ctx commands.CommandContext) error {
 				}
 			}
 		}
+		goto failedCheck
 	}
 
+failedCheck:
 	if _, err2 := ctx.Session.ChannelMessageSend(
 		ctx.Message.ChannelID,
 		"You do not have the manage emojis permission!"); true {
