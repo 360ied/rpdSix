@@ -27,22 +27,39 @@ func run(ctx commands.CommandContext) {
 		command, exists_ := commands.Commands[strings.ToLower(ctx.Arguments[commandArg])]
 		if exists_ {
 			// lmao
-			var keywordArgumentAliasesStringArray []string
+
+			var formattedCommandNames []string
+
+			for _, value := range command.Names {
+				formattedCommandNames = append(
+					formattedCommandNames,
+					fmt.Sprint("`", value, "`"))
+			}
+
+			var formattedExpectedPositionalArguments []string
+
+			for _, value := range command.ExpectedPositionalArguments {
+				formattedExpectedPositionalArguments = append(
+					formattedExpectedPositionalArguments,
+					fmt.Sprint("`", value, "`"))
+			}
+
+			var formattedKeywordArgumentAliasesStringArray []string
 
 			for key, value := range command.KeywordArgumentAliases {
-				keywordArgumentAliasesStringArray = append(
-					keywordArgumentAliasesStringArray,
-					fmt.Sprint(key, ": ", value))
+				formattedKeywordArgumentAliasesStringArray = append(
+					formattedKeywordArgumentAliasesStringArray,
+					fmt.Sprint("`", key, "`: `", value, "`"))
 			}
 
 			_, err := ctx.Session.ChannelMessageSend(
 				ctx.Message.ChannelID,
 				fmt.Sprint(
-					strings.Join(command.Names, ", "),
-					"\nExpected Positional Arguments: ",
-					strings.Join(command.ExpectedPositionalArguments, ", "),
+					strings.Join(formattedCommandNames, ", "),
+					":\nExpected Positional Arguments: ",
+					strings.Join(formattedExpectedPositionalArguments, ", "),
 					"\nKeyword Argument Aliases: ",
-					strings.Join(keywordArgumentAliasesStringArray, ", ")))
+					strings.Join(formattedKeywordArgumentAliasesStringArray, ", ")))
 			if err != nil {
 				tracerr.PrintSourceColor(err)
 			}
