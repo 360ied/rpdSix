@@ -39,9 +39,9 @@ func run(ctx commands.CommandContext) error {
 	}
 	for _, member := range messageGuild.Members {
 		if member.User.ID == ctx.Message.Author.ID {
-			for _, role := range member.Roles {
+			for _, roleID := range member.Roles {
 				for _, guildRole := range messageGuild.Roles {
-					if guildRole.ID == role {
+					if guildRole.ID == roleID {
 						// MANAGE_EMOJIS
 						if guildRole.Permissions&0x40000000 == 0x40000000 {
 							goto successfulCheck
