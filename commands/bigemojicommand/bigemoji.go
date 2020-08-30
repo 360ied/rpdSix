@@ -14,7 +14,7 @@ import (
 	_ "golang.org/x/image/webp"
 
 	"rpdSix/commands"
-	"rpdSix/helpers"
+	image2 "rpdSix/helpers/image"
 )
 
 func Initialize() {
@@ -105,7 +105,7 @@ successfulCheck:
 	for i := 0; i < gridSize; i++ {
 		var row []image.Image
 		for j := 0; j < gridSize; j++ {
-			row = append(row, img.(helpers.SubImager).SubImage(
+			row = append(row, img.(image2.SubImager).SubImage(
 				image.Rect(
 					partitionSizeX*j, partitionSizeY*i,
 					partitionSizeX*j+partitionSizeX, partitionSizeY*i+partitionSizeY)))
