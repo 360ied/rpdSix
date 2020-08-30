@@ -6,6 +6,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/ztrue/tracerr"
+
+	"rpdSix/helpers/extendeddiscordobjects"
 )
 
 const (
@@ -20,7 +22,7 @@ var (
 
 type CommandContext struct {
 	Session   *discordgo.Session
-	Message   *discordgo.MessageCreate
+	Message   *extendeddiscordobjects.ExtendedMessage
 	Arguments map[string]string
 }
 
@@ -73,7 +75,7 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 
 	var context = CommandContext{
 		Session: session,
-		Message: message,
+		Message: extendeddiscordobjects.ExtendMessage(message.Message, session),
 		Arguments: parseArguments(
 			message.Content,
 			command.ExpectedPositionalArguments,
