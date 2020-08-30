@@ -32,23 +32,51 @@ const (
 )
 
 func run(ctx commands.CommandContext) error {
+	// Check if the author has the manage emojis permission
+	var messageGuild, err1 = ctx.Session.Guild(ctx.Message.GuildID)
+	if err1 != nil {
+		return err1
+	}
+	for _, member := range messageGuild.Members {
+		if member.User.ID == ctx.Message.Author.ID {
+			for _, role := range member.Roles {
+				for _, guildRole := range messageGuild.Roles {
+					if guildRole.ID == role {
+						// MANAGE_EMOJIS
+						fmt.Println(guildRole.Name)
+						if guildRole.Permissions&0x40000000 == 0x40000000 {
+							goto doneCheckingForPermissions
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if _, err2 := ctx.Session.ChannelMessageSend(
+		ctx.Message.ChannelID,
+		"You do not have the manage emojis permission!"); true {
+		return err2
+	}
+
+doneCheckingForPermissions:
 	if len(ctx.Message.Attachments) == 0 {
-		var _, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "No attachments were found!")
-		return err
+		var _, err3 = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "No attachments were found!")
+		return err3
 	}
 
 	var attachment = ctx.Message.Attachments[0]
 	// consider using ProxyURL instead of URL
-	resp, err2 := ctx.Session.Client.Get(attachment.URL)
-	if err2 != nil {
-		return err2
+	resp, err4 := ctx.Session.Client.Get(attachment.URL)
+	if err4 != nil {
+		return err4
 	} else if resp.StatusCode != 200 {
 		return errors.New(fmt.Sprint("status code is not 200, status code is: ", resp.StatusCode))
 	}
 
-	var img, _, err3 = image.Decode(resp.Body)
-	if err3 != nil {
-		return err3
+	var img, _, err5 = image.Decode(resp.Body)
+	if err5 != nil {
+		return err5
 	}
 
 	var gridSize int
@@ -58,9 +86,9 @@ func run(ctx commands.CommandContext) error {
 	if !exists2 {
 		gridSize = defaultGridSize
 	} else {
-		var gridSizeTmp, err4 = strconv.Atoi(gridSizeStr)
-		if err4 != nil {
-			return err4
+		var gridSizeTmp, err6 = strconv.Atoi(gridSizeStr)
+		if err6 != nil {
+			return err6
 		}
 		gridSize = gridSizeTmp
 	}
@@ -87,8 +115,8 @@ func run(ctx commands.CommandContext) error {
 
 	var emojiBaseName, exists3 = ctx.Arguments[emojiNameArg]
 	if !exists3 {
-		var _, err5 = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Emoji name not found!")
-		return err5
+		var _, err7 = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Emoji name not found!")
+		return err7
 	}
 
 	var messageString = ""
@@ -99,21 +127,21 @@ func run(ctx commands.CommandContext) error {
 			var buffer bytes.Buffer
 
 			//goland:noinspection GoNilness
-			var err6 = png.Encode(&buffer, grid[i][j])
-			if err6 != nil {
-				return err6
+			var err8 = png.Encode(&buffer, grid[i][j])
+			if err8 != nil {
+				return err8
 			}
 
 			var encodedImage = base64.StdEncoding.EncodeToString(buffer.Bytes())
 
-			var emoji, err7 = ctx.Session.GuildEmojiCreate(
+			var emoji, err9 = ctx.Session.GuildEmojiCreate(
 				ctx.Message.GuildID,
 				// humans naturally start counting at 1, not 0
 				fmt.Sprint(emojiBaseName, "_", i+1, "_", j+1),
 				fmt.Sprint("data:png;base64,", encodedImage),
 				nil)
-			if err7 != nil {
-				return err7
+			if err9 != nil {
+				return err9
 			}
 
 			messageString += fmt.Sprint(":", emoji.Name, ":")
@@ -121,11 +149,11 @@ func run(ctx commands.CommandContext) error {
 		messageString += "\n"
 	}
 
-	var _, err8 = ctx.Session.ChannelMessageSend(
+	var _, err10 = ctx.Session.ChannelMessageSend(
 		ctx.Message.ChannelID,
 		fmt.Sprint(
 			"Copy the text below:\n",
 			messageString))
 
-	return err8
+	return err10
 }
