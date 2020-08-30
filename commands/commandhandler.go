@@ -2,9 +2,10 @@ package commands
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/ztrue/tracerr"
-	"strings"
 )
 
 const (
@@ -110,9 +111,9 @@ func parseArguments(
 
 	var returnArguments = make(map[string]string)
 
-	//if len(separated) == 0 {
+	// if len(separated) == 0 {
 	//	return returnArguments
-	//}
+	// }
 
 	var currentPosition = 0
 

@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
+
+	"github.com/bwmarrin/discordgo"
+
 	"rpdSix/commands"
 	"rpdSix/commands/bigemojicommand"
 	"rpdSix/commands/helpcommand"

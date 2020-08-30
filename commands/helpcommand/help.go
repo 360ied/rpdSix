@@ -2,8 +2,9 @@ package helpcommand
 
 import (
 	"fmt"
-	"rpdSix/commands"
 	"strings"
+
+	"rpdSix/commands"
 )
 
 func Initialize() {

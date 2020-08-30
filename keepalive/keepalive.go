@@ -2,8 +2,9 @@ package keepalive
 
 import (
 	"fmt"
-	"github.com/ztrue/tracerr"
 	"net/http"
+
+	"github.com/ztrue/tracerr"
 )
 
 func KeepAlive() {
