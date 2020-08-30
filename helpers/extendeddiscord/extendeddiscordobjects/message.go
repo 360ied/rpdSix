@@ -1,6 +1,10 @@
 package extendeddiscordobjects
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"github.com/bwmarrin/discordgo"
+
+	"rpdSix/helpers/extendeddiscord"
+)
 
 type ExtendedMessage struct {
 	*discordgo.Message
@@ -41,5 +45,5 @@ func (message ExtendedMessage) AuthorMember() (*discordgo.Member, error) {
 			return member, nil
 		}
 	}
-	return nil, MemberNotFoundError
+	return nil, extendeddiscord.MemberNotFoundError
 }

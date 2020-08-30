@@ -1,4 +1,4 @@
-package extendeddiscordobjects
+package extendeddiscord
 
 import (
 	"errors"
