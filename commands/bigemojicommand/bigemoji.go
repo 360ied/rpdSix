@@ -57,15 +57,14 @@ func run(ctx commands.CommandContext) error {
 	return errors.New(fmt.Sprint("member not found, member id: ", ctx.Message.Author.ID))
 
 failedCheck:
-	if _, err2 := ctx.Session.ChannelMessageSend(
-		ctx.Message.ChannelID,
-		"You do not have the manage emojis permission!"); true {
+	if _, err2 := ctx.Message.Reply("You do not have the manage emojis permission!");
+		true {
 		return err2
 	}
 
 successfulCheck:
 	if len(ctx.Message.Attachments) == 0 {
-		var _, err3 = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "No attachments were found!")
+		var _, err3 = ctx.Message.Reply("No attachments were found!")
 		return err3
 	}
 
@@ -119,7 +118,7 @@ successfulCheck:
 
 	var emojiBaseName, exists3 = ctx.Arguments[emojiNameArg]
 	if !exists3 {
-		var _, err7 = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Emoji name not found!")
+		var _, err7 = ctx.Message.Reply("Emoji name not found!")
 		return err7
 	}
 
@@ -153,8 +152,7 @@ successfulCheck:
 		messageString += "\n"
 	}
 
-	var _, err10 = ctx.Session.ChannelMessageSend(
-		ctx.Message.ChannelID,
+	var _, err10 = ctx.Message.Reply(
 		fmt.Sprint(
 			"Copy the text below:\n",
 			messageString))
