@@ -43,7 +43,6 @@ func run(ctx commands.CommandContext) error {
 				for _, guildRole := range messageGuild.Roles {
 					if guildRole.ID == role {
 						// MANAGE_EMOJIS
-						fmt.Println(guildRole.Name)
 						if guildRole.Permissions&0x40000000 == 0x40000000 {
 							goto successfulCheck
 						}
