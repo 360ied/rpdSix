@@ -38,28 +38,28 @@ func run(ctx commands.CommandContext) error {
 
 	var attachment = ctx.Message.Attachments[0]
 	// consider using ProxyURL instead of URL
-	resp, err := ctx.Session.Client.Get(attachment.URL)
-	if err != nil {
-		return err
+	resp, err2 := ctx.Session.Client.Get(attachment.URL)
+	if err2 != nil {
+		return err2
 	} else if resp.StatusCode != 200 {
 		return errors.New(fmt.Sprint("status code is not 200, status code is: ", resp.StatusCode))
 	}
 
-	var img, _, err2 = image.Decode(resp.Body)
-	if err2 != nil {
-		return err
+	var img, _, err3 = image.Decode(resp.Body)
+	if err3 != nil {
+		return err3
 	}
 
 	var gridSize int
 
-	var gridSizeStr, exists = ctx.Arguments[gridSizeArg]
+	var gridSizeStr, exists2 = ctx.Arguments[gridSizeArg]
 
-	if !exists {
+	if !exists2 {
 		gridSize = defaultGridSize
 	} else {
-		var gridSizeTmp, err3 = strconv.Atoi(gridSizeStr)
-		if err3 != nil {
-			return err3
+		var gridSizeTmp, err4 = strconv.Atoi(gridSizeStr)
+		if err4 != nil {
+			return err4
 		}
 		gridSize = gridSizeTmp
 	}
@@ -84,10 +84,10 @@ func run(ctx commands.CommandContext) error {
 
 	// make emojis
 
-	var emojiBaseName, exists2 = ctx.Arguments[emojiNameArg]
-	if !exists2 {
-		var _, err3 = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Emoji name not found!")
-		return err3
+	var emojiBaseName, exists3 = ctx.Arguments[emojiNameArg]
+	if !exists3 {
+		var _, err5 = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Emoji name not found!")
+		return err5
 	}
 
 	var messageString = ""
@@ -98,21 +98,21 @@ func run(ctx commands.CommandContext) error {
 			var buffer bytes.Buffer
 
 			//goland:noinspection GoNilness
-			var err4 = png.Encode(&buffer, grid[i][j])
-			if err4 != nil {
-				return err4
+			var err6 = png.Encode(&buffer, grid[i][j])
+			if err6 != nil {
+				return err6
 			}
 
 			var encodedImage = base64.StdEncoding.EncodeToString(buffer.Bytes())
 
-			var emoji, err5 = ctx.Session.GuildEmojiCreate(
+			var emoji, err7 = ctx.Session.GuildEmojiCreate(
 				ctx.Message.GuildID,
 				// humans naturally start counting at 1, not 0
 				fmt.Sprint(emojiBaseName, "_", i+1, "_", j+1),
 				fmt.Sprint("data:png;base64,", encodedImage),
 				nil)
-			if err5 != nil {
-				return err5
+			if err7 != nil {
+				return err7
 			}
 
 			messageString += fmt.Sprint(":", emoji.Name, ":")
@@ -120,11 +120,11 @@ func run(ctx commands.CommandContext) error {
 		messageString += "\n"
 	}
 
-	var _, err3 = ctx.Session.ChannelMessageSend(
+	var _, err8 = ctx.Session.ChannelMessageSend(
 		ctx.Message.ChannelID,
 		fmt.Sprint(
 			"Copy the text below:\n",
 			messageString))
 
-	return err3
+	return err8
 }
