@@ -16,7 +16,7 @@ func main() {
 	// so that repl.it won't exit after the page is closed
 	go keepalive.KeepAlive()
 
-	bot, err := discordgo.New("Bot " + os.Getenv("TOKEN"))
+	var bot, err = discordgo.New("Bot " + os.Getenv("TOKEN"))
 
 	if err != nil {
 		panic(err)
@@ -49,7 +49,7 @@ func main() {
 }
 
 func ready(session *discordgo.Session, event *discordgo.Ready) {
-	err := session.UpdateStatus(0, "golang")
+	var err = session.UpdateStatus(0, "golang")
 	if err != nil {
 		fmt.Println("Error updating status: ", err)
 	}

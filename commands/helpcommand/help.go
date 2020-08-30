@@ -23,7 +23,7 @@ const (
 func run(ctx commands.CommandContext) error {
 	if _, exists := ctx.Arguments[commandArg]; exists {
 		// show specific information about a command
-		command, exists_ := commands.Commands[strings.ToLower(ctx.Arguments[commandArg])]
+		var command, exists_ = commands.Commands[strings.ToLower(ctx.Arguments[commandArg])]
 		if exists_ {
 			// lmao these variable names
 
@@ -51,7 +51,7 @@ func run(ctx commands.CommandContext) error {
 					fmt.Sprint("`", key, "`: `", value, "`"))
 			}
 
-			_, err := ctx.Session.ChannelMessageSend(
+			var _, err = ctx.Session.ChannelMessageSend(
 				ctx.Message.ChannelID,
 				fmt.Sprint(
 					strings.Join(formattedCommandNames, ", "),
@@ -62,7 +62,7 @@ func run(ctx commands.CommandContext) error {
 			return err
 		} else {
 			// command doesn't exist
-			_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Command not found!")
+			var _, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Command not found!")
 			return err
 		}
 	} else {
@@ -72,7 +72,7 @@ func run(ctx commands.CommandContext) error {
 			outputStr += fmt.Sprint("`", commandName, "`, ")
 		}
 		outputStr = outputStr[:len(outputStr)-len(", ")]
-		_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, outputStr)
+		var _, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, outputStr)
 		return err
 	}
 }

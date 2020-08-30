@@ -19,6 +19,6 @@ const (
 )
 
 func run(ctx commands.CommandContext) error {
-	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, ctx.Arguments[toSayArg])
+	var _, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, ctx.Arguments[toSayArg])
 	return err
 }

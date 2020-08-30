@@ -14,6 +14,6 @@ func Initialize() {
 }
 
 func run(ctx commands.CommandContext) error {
-	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Pong!")
+	var _, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Pong!")
 	return err
 }

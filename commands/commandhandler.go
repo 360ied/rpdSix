@@ -64,7 +64,7 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 
 	// fmt.Println(commandName) // debug
 
-	command, exists := Commands[commandName]
+	var command, exists = Commands[commandName]
 
 	if !exists {
 		return
@@ -131,7 +131,7 @@ func parseArguments(
 			}
 		} else {
 			if currentPosition >= len(expectedPositionalArguments) {
-				_, exists := returnArguments[
+				var _, exists = returnArguments[
 					expectedPositionalArguments[
 						len(expectedPositionalArguments)-1]]
 				if exists {
@@ -160,7 +160,7 @@ func parseArguments(
 	//goland:noinspection GoNilness
 	for key, value := range returnArguments {
 		key = strings.ToLower(key)
-		_, exists := keywordArgumentAliases[key]
+		var _, exists = keywordArgumentAliases[key]
 		if exists {
 			returnArguments[keywordArgumentAliases[key]] = value
 		}
