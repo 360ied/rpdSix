@@ -90,6 +90,9 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 			_, err = session.ChannelMessageSend(
 				message.ChannelID,
 				"An Error occurred while executing the command and sending the error message!")
+			if err != nil {
+				tracerr.PrintSourceColor(err)
+			}
 		}
 	}
 }
