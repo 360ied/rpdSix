@@ -70,8 +70,6 @@ func run(ctx commands.CommandContext) error {
 
 	var partitionSizeX = imgSize.X / gridSize
 	var partitionSizeY = imgSize.Y / gridSize
-	//fmt.Println(partitionSizeY)
-	//fmt.Println(partitionSizeY)
 
 	for i := 0; i < gridSize; i++ {
 		var row []image.Image
@@ -80,15 +78,11 @@ func run(ctx commands.CommandContext) error {
 				image.Rect(
 					partitionSizeX*j, partitionSizeY*i,
 					partitionSizeX*j+partitionSizeX, partitionSizeY*i+partitionSizeY)))
-			//fmt.Println(fmt.Sprint(partitionSizeX*j, partitionSizeY*i,
-			//	partitionSizeX*j, partitionSizeY*i))
 		}
 		grid = append(grid, row)
 	}
 
 	// make emojis
-
-	//var emojis [][]*discordgo.Emoji
 
 	var emojiBaseName, exists2 = ctx.Arguments[emojiNameArg]
 	if !exists2 {
@@ -96,15 +90,10 @@ func run(ctx commands.CommandContext) error {
 		return err3
 	}
 
-	//fmt.Println(emojiBaseName)
-	//fmt.Println(len(emojiBaseName))
-
 	var messageString = ""
 
 	for i := 0; i < gridSize; i++ {
-		//var row []*discordgo.Emoji
 		for j := 0; j < gridSize; j++ {
-			//fmt.Println(i, j)
 
 			var buffer bytes.Buffer
 
@@ -114,13 +103,7 @@ func run(ctx commands.CommandContext) error {
 				return err4
 			}
 
-			//fmt.Println("encoding image")
-
 			var encodedImage = base64.StdEncoding.EncodeToString(buffer.Bytes())
-
-			//fmt.Println(encodedImage)
-			//fmt.Println("length of encoded image", len(encodedImage))
-			//fmt.Println(fmt.Sprint(emojiBaseName, "_", i, "_", j))
 
 			var emoji, err5 = ctx.Session.GuildEmojiCreate(
 				ctx.Message.GuildID,
@@ -132,14 +115,9 @@ func run(ctx commands.CommandContext) error {
 				return err5
 			}
 
-			//fmt.Println(emoji.Name)
-
 			messageString += fmt.Sprint(":", emoji.Name, ":")
-
-			//row = append(row, emoji)
 		}
 		messageString += "\n"
-		//emojis = append(emojis, row)
 	}
 
 	var _, err3 = ctx.Session.ChannelMessageSend(
