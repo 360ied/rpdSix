@@ -1,7 +1,6 @@
 package saycommand
 
 import (
-	"github.com/ztrue/tracerr"
 	"rpdSix/commands"
 )
 
@@ -19,9 +18,7 @@ const (
 	toSayArg = "toSay"
 )
 
-func run(ctx commands.CommandContext) {
+func run(ctx commands.CommandContext) error {
 	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, ctx.Arguments[toSayArg])
-	if err != nil {
-		tracerr.PrintSourceColor(err)
-	}
+	return err
 }

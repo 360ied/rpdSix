@@ -2,7 +2,6 @@ package helpcommand
 
 import (
 	"fmt"
-	"github.com/ztrue/tracerr"
 	"rpdSix/commands"
 	"strings"
 )
@@ -21,12 +20,12 @@ const (
 	commandArg = "command"
 )
 
-func run(ctx commands.CommandContext) {
+func run(ctx commands.CommandContext) error {
 	if _, exists := ctx.Arguments[commandArg]; exists {
 		// show specific information about a command
 		command, exists_ := commands.Commands[strings.ToLower(ctx.Arguments[commandArg])]
 		if exists_ {
-			// lmao
+			// lmao these variable names
 
 			var formattedCommandNames []string
 
@@ -60,15 +59,11 @@ func run(ctx commands.CommandContext) {
 					strings.Join(formattedExpectedPositionalArguments, ", "),
 					"\nKeyword Argument Aliases: ",
 					strings.Join(formattedKeywordArgumentAliasesStringArray, ", ")))
-			if err != nil {
-				tracerr.PrintSourceColor(err)
-			}
+			return err
 		} else {
 			// command doesn't exist
 			_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Command not found!")
-			if err != nil {
-				tracerr.PrintSourceColor(err)
-			}
+			return err
 		}
 	} else {
 		// list commands
@@ -78,8 +73,6 @@ func run(ctx commands.CommandContext) {
 		}
 		outputStr = outputStr[:len(outputStr)-len(", ")]
 		_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, outputStr)
-		if err != nil {
-			tracerr.PrintSourceColor(err)
-		}
+		return err
 	}
 }

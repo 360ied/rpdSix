@@ -1,7 +1,9 @@
 package commands
 
 import (
+	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/ztrue/tracerr"
 	"strings"
 )
 
@@ -22,7 +24,7 @@ type CommandContext struct {
 }
 
 type Command struct {
-	Run                         func(ctx CommandContext)
+	Run                         func(ctx CommandContext) error
 	Names                       []string
 	ExpectedPositionalArguments []string
 	KeywordArgumentAliases      map[string]string
@@ -77,7 +79,19 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 			command.KeywordArgumentAliases),
 	}
 
-	go command.Run(context)
+	var err = command.Run(context)
+	if err != nil {
+		tracerr.PrintSourceColor(err)
+		_, err = session.ChannelMessageSend(
+			message.ChannelID,
+			fmt.Sprint("An Error occurred while executing the command!\n", err))
+		if err != nil {
+			tracerr.PrintSourceColor(err)
+			_, err = session.ChannelMessageSend(
+				message.ChannelID,
+				"An Error occurred while executing the command and sending the error message!")
+		}
+	}
 }
 
 // Parse command arguments
