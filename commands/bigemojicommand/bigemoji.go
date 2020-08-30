@@ -52,6 +52,7 @@ func run(ctx commands.CommandContext) error {
 			goto failedCheck
 		}
 	}
+	return errors.New(fmt.Sprint("member not found, member id:", ctx.Message.Author.ID))
 
 failedCheck:
 	if _, err2 := ctx.Session.ChannelMessageSend(
