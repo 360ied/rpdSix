@@ -35,7 +35,7 @@ const (
 
 func run(ctx commands.CommandContext) error {
 	// Check if the author has the manage emojis permission
-	var messageGuild, err1 = ctx.Session.Guild(ctx.Message.GuildID)
+	var messageGuild, err1 = ctx.Message.Guild()
 	if err1 != nil {
 		return err1
 	}
