@@ -11,14 +11,22 @@ func ExtendMessage(message *discordgo.Message, session *discordgo.Session) *Exte
 	return &ExtendedMessage{message, session}
 }
 
+// short form for message.session.Guild(message.GuildID)
 func (message ExtendedMessage) Guild() (*discordgo.Guild, error) {
 	return message.session.Guild(message.GuildID)
 }
 
+// short form for message.session.ChannelMessageSend(message.ChannelID, content)
 func (message ExtendedMessage) Reply(content string) (*discordgo.Message, error) {
 	return message.session.ChannelMessageSend(message.ChannelID, content)
 }
 
+// short form for message.session.ChannelMessageSendComplex(message.ChannelID, &discordgo.MessageSend{...})
+func (message ExtendedMessage) ComplexReply(send *discordgo.MessageSend) (*discordgo.Message, error) {
+	return message.session.ChannelMessageSendComplex(message.ChannelID, send)
+}
+
+// short form for message.session.Channel(message.ChannelID)
 func (message ExtendedMessage) Channel() (*discordgo.Channel, error) {
 	return message.session.Channel(message.ChannelID)
 }
