@@ -39,24 +39,23 @@ func run(ctx commands.CommandContext) error {
 	if err1 != nil {
 		return err1
 	}
-	for _, member := range messageGuild.Members {
-		if member.User.ID == ctx.Message.Author.ID {
-			for _, roleID := range member.Roles {
-				for _, guildRole := range messageGuild.Roles {
-					if guildRole.ID == roleID {
-						// MANAGE_EMOJIS
-						if guildRole.Permissions&0x40000000 == 0x40000000 {
-							goto successfulCheck
-						}
-					}
+
+	var authorMember, authorMemberErr = ctx.Message.AuthorMember()
+	if authorMemberErr != nil {
+		return authorMemberErr
+	}
+
+	for _, roleID := range authorMember.Roles {
+		for _, guildRole := range messageGuild.Roles {
+			if guildRole.ID == roleID {
+				// MANAGE_EMOJIS
+				if guildRole.Permissions&0x40000000 == 0x40000000 {
+					goto successfulCheck
 				}
 			}
-			goto failedCheck
 		}
 	}
-	return errors.New(fmt.Sprint("member not found, member id: ", ctx.Message.Author.ID))
-
-failedCheck:
+	// failed check
 	if _, err2 := ctx.Message.Reply("You do not have the manage emojis permission!");
 		true {
 		return err2
