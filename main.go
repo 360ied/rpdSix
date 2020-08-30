@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"rpdSix/commands"
+	"rpdSix/commands/bigemojicommand"
 	"rpdSix/commands/helpcommand"
 	"rpdSix/commands/pingcommand"
 	"rpdSix/commands/saycommand"
@@ -32,6 +33,7 @@ func main() {
 	pingcommand.Initialize()
 	saycommand.Initialize()
 	helpcommand.Initialize()
+	bigemojicommand.Initialize()
 
 	err = bot.Open()
 
