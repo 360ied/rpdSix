@@ -26,8 +26,8 @@ func Initialize() {
 }
 
 const (
-	emojiNameArg    = "emojiNameArg"
-	gridSizeArg     = "gridSizeArg"
+	emojiNameArg    = "emojiName"
+	gridSizeArg     = "gridSize"
 	defaultGridSize = 2
 )
 
