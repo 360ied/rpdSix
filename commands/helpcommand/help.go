@@ -52,8 +52,7 @@ func run(ctx commands.CommandContext) error {
 					fmt.Sprint("`", key, "`: `", value, "`"))
 			}
 
-			var _, err = ctx.Session.ChannelMessageSend(
-				ctx.Message.ChannelID,
+			var _, err = ctx.Message.Reply(
 				fmt.Sprint(
 					strings.Join(formattedCommandNames, ", "),
 					":\nExpected Positional Arguments: ",
@@ -63,7 +62,7 @@ func run(ctx commands.CommandContext) error {
 			return err
 		} else {
 			// command doesn't exist
-			var _, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Command not found!")
+			var _, err = ctx.Message.Reply("Command not found!")
 			return err
 		}
 	} else {
@@ -73,7 +72,7 @@ func run(ctx commands.CommandContext) error {
 			outputStr += fmt.Sprint("`", commandName, "`, ")
 		}
 		outputStr = outputStr[:len(outputStr)-len(", ")]
-		var _, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, outputStr)
+		var _, err = ctx.Message.Reply(outputStr)
 		return err
 	}
 }
