@@ -49,8 +49,8 @@ func run(ctx commands.CommandContext) error {
 					}
 				}
 			}
+			goto failedCheck
 		}
-		goto failedCheck
 	}
 
 failedCheck:
