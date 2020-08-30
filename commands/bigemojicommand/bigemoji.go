@@ -45,7 +45,7 @@ func run(ctx commands.CommandContext) error {
 						// MANAGE_EMOJIS
 						fmt.Println(guildRole.Name)
 						if guildRole.Permissions&0x40000000 == 0x40000000 {
-							goto doneCheckingForPermissions
+							goto successfulCheck
 						}
 					}
 				}
@@ -61,7 +61,7 @@ failedCheck:
 		return err2
 	}
 
-doneCheckingForPermissions:
+successfulCheck:
 	if len(ctx.Message.Attachments) == 0 {
 		var _, err3 = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "No attachments were found!")
 		return err3
