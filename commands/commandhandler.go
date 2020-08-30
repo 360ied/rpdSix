@@ -7,7 +7,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/ztrue/tracerr"
 
-	"rpdSix/helpers/extendeddiscordobjects"
+	"rpdSix/extendeddiscord/extendeddiscordobjects"
 )
 
 const (
