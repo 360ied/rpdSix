@@ -5,11 +5,11 @@ func IsPermitted(permissionsInteger, permission int) bool {
 }
 
 func IsPermittedAll(permissionInteger int, permissions ...int) bool {
-	if IsPermitted(permissionInteger, ADMINISTRATOR) {
+	if permissionInteger&ADMINISTRATOR == ADMINISTRATOR {
 		return true
 	}
 	for _, permission := range permissions {
-		if !IsPermitted(permissionInteger, permission) {
+		if permissionInteger&permission != permission {
 			return false
 		}
 	}
