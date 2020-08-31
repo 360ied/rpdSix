@@ -70,35 +70,6 @@ func checkedRun(ctx commands.CommandContext) error {
 }
 
 func run(ctx commands.CommandContext) error {
-	// Check if the author has the manage emojis permission
-	var messageGuild, err1 = ctx.Message.Guild()
-	if err1 != nil {
-		return err1
-	}
-
-	var authorMember, authorMemberErr = ctx.Message.AuthorMember()
-	if authorMemberErr != nil {
-		return authorMemberErr
-	}
-
-	for _, roleID := range authorMember.Roles {
-		for _, guildRole := range messageGuild.Roles {
-			if guildRole.ID == roleID {
-				if extendeddiscordpermissions.HasPermission(
-					guildRole.Permissions,
-					extendeddiscordpermissions.MANAGE_EMOJIS) {
-					goto successfulCheck
-				}
-			}
-		}
-	}
-	// failed check
-	if _, err2 := ctx.Message.Reply("You do not have the manage emojis permission!");
-		true {
-		return err2
-	}
-
-successfulCheck:
 	if len(ctx.Message.Attachments) == 0 {
 		var _, err3 = ctx.Message.Reply("No attachments were found!")
 		return err3
