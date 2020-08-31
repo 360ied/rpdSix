@@ -42,11 +42,17 @@ func (message *ExtendedMessage) Channel() (*discordgo.Channel, error) {
 }
 
 func (message *ExtendedMessage) AuthorMember() (*discordgo.Member, error) {
-	var messageGuild, err = message.Guild()
-	if err != nil {
-		return nil, err
+	var messageGuild, messageGuildErr = message.Guild()
+	if messageGuildErr != nil {
+		return nil, messageGuildErr
 	}
-	for _, member := range messageGuild.Members {
+	var extendedMessageGuild = ExtendGuild(messageGuild, message.session)
+	var extendedMessageGuildMembers, extendedMessageGuildMembersErr = extendedMessageGuild.GetMembers()
+	if extendedMessageGuildMembersErr != nil {
+		return nil, extendedMessageGuildMembersErr
+	}
+
+	for _, member := range extendedMessageGuildMembers {
 		if member.User.ID == message.Author.ID {
 			return member, nil
 		}

@@ -45,12 +45,12 @@ func checkedRun(ctx commands.CommandContext) error {
 		return authorMemberErr
 	}
 	var extendedAuthorMember = extendeddiscordobjects.ExtendMember(authorMember, ctx.Session)
-
+	extendedAuthorMember.GuildID = ctx.Message.GuildID // fix
 	var hasAllPermissions, hasAllPermissionsErr = extendedAuthorMember.HasAllPermissions(requiredPermissions...)
 	if hasAllPermissionsErr != nil {
 		return hasAllPermissionsErr
 	}
-	if hasAllPermissions{
+	if hasAllPermissions {
 		return run(ctx)
 	}
 

@@ -65,8 +65,6 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 			len(prefix):strings.Index(message.Content, stringSeparator)]
 	}
 
-	// fmt.Println(commandName) // debug
-
 	var command, exists = Commands[commandName]
 
 	if !exists {

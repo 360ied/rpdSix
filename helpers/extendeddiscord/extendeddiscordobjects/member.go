@@ -27,9 +27,25 @@ func (member *ExtendedMember) HasAllPermissions(permissions ...int) (bool, error
 	if memberGuildErr != nil {
 		return false, memberGuildErr
 	}
+
+	if memberGuild.OwnerID == member.User.ID {
+		return true, nil
+	}
+
 	var extendedGuild = ExtendGuild(memberGuild, member.session)
 
-	var roles = extendedGuild.GetRolesSlice(member.Roles)
+	if len(member.Roles) == 0 {
+		var reGetMember, reGetMemberErr = member.session.GuildMember(member.GuildID, member.User.ID)
+		if reGetMemberErr != nil {
+			return false, reGetMemberErr
+		}
+		member.Roles = reGetMember.Roles
+	}
+
+	var roles, rolesErr = extendedGuild.GetRolesSlice(member.Roles)
+	if rolesErr != nil {
+		return false, rolesErr
+	}
 
 	var combinedPermissionInteger = 0
 
@@ -38,5 +54,5 @@ func (member *ExtendedMember) HasAllPermissions(permissions ...int) (bool, error
 		combinedPermissionInteger |= role.Permissions
 	}
 
-	return extendeddiscordpermissions.HasAllPermissions(combinedPermissionInteger, permissions...), nil
+	return extendeddiscordpermissions.IsPermittedAll(combinedPermissionInteger, permissions...), nil
 }
