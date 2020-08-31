@@ -14,13 +14,15 @@ import (
 	_ "golang.org/x/image/webp"
 
 	"rpdSix/commands"
-	image2 "rpdSix/helpers/image"
+	"rpdSix/helpers/extendeddiscord/extendeddiscordobjects"
+	"rpdSix/helpers/extendeddiscord/extendeddiscordpermissions"
+	"rpdSix/helpers/extendedimage"
 )
 
 func Initialize() {
 	commands.AddCommand(
 		commands.Command{
-			Run:                         run,
+			Run:                         checkedRun,
 			Names:                       []string{"bigemoji"},
 			ExpectedPositionalArguments: []string{emojiNameArg, gridSizeArg},
 		},
@@ -32,6 +34,40 @@ const (
 	gridSizeArg     = "gridSize"
 	defaultGridSize = 2
 )
+
+var (
+	requiredPermissions = []int{extendeddiscordpermissions.MANAGE_EMOJIS}
+)
+
+func checkedRun(ctx commands.CommandContext) error {
+	var authorMember, authorMemberErr = ctx.Message.AuthorMember()
+	if authorMemberErr != nil {
+		return authorMemberErr
+	}
+	var extendedAuthorMember = extendeddiscordobjects.ExtendMember(authorMember, ctx.Session)
+
+	var hasAllPermissions, hasAllPermissionsErr = extendedAuthorMember.HasAllPermissions(requiredPermissions...)
+	if hasAllPermissionsErr != nil {
+		return hasAllPermissionsErr
+	}
+	if hasAllPermissions{
+		return run(ctx)
+	}
+
+	var requiredPermissionNames []string
+
+	for _, permission := range requiredPermissions {
+		var permissionName, _ = extendeddiscordpermissions.ValueWithName[permission]
+		// if !contains {
+		// 	panic(fmt.Sprint("??? ", permission, " not found in extendeddiscordpermissions.ValueWithName"))
+		// }
+		requiredPermissionNames = append(requiredPermissionNames, permissionName)
+	}
+
+	return errors.New(fmt.Sprint(
+		"permissions error, author does not have required permissions\n",
+		"required permissions are: ", requiredPermissionNames))
+}
 
 func run(ctx commands.CommandContext) error {
 	// Check if the author has the manage emojis permission
@@ -48,8 +84,9 @@ func run(ctx commands.CommandContext) error {
 	for _, roleID := range authorMember.Roles {
 		for _, guildRole := range messageGuild.Roles {
 			if guildRole.ID == roleID {
-				// MANAGE_EMOJIS
-				if guildRole.Permissions&0x40000000 == 0x40000000 {
+				if extendeddiscordpermissions.HasPermission(
+					guildRole.Permissions,
+					extendeddiscordpermissions.MANAGE_EMOJIS) {
 					goto successfulCheck
 				}
 			}
@@ -105,7 +142,7 @@ successfulCheck:
 	for i := 0; i < gridSize; i++ {
 		var row []image.Image
 		for j := 0; j < gridSize; j++ {
-			row = append(row, img.(image2.SubImager).SubImage(
+			row = append(row, img.(extendedimage.SubImager).SubImage(
 				image.Rect(
 					partitionSizeX*j, partitionSizeY*i,
 					partitionSizeX*j+partitionSizeX, partitionSizeY*i+partitionSizeY)))
