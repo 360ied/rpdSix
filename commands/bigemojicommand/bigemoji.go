@@ -9,6 +9,7 @@ import (
 	_ "image/gif"
 	_ "image/jpeg"
 	"image/png"
+	"net/http"
 	"strconv"
 
 	_ "golang.org/x/image/webp"
@@ -77,7 +78,7 @@ func run(ctx commands.CommandContext) error {
 
 	var attachment = ctx.Message.Attachments[0]
 	// consider using ProxyURL instead of URL
-	resp, err4 := ctx.Session.Client.Get(attachment.URL)
+	resp, err4 := http.Get(attachment.URL)
 	if err4 != nil {
 		return err4
 	} else if resp.StatusCode != 200 {
