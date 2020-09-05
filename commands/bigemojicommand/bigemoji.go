@@ -15,7 +15,7 @@ import (
 	_ "golang.org/x/image/webp"
 
 	"rpdSix/commands"
-	"rpdSix/helpers/extendeddiscord/extendeddiscordobjects"
+	"rpdSix/commands/checkedrun"
 	"rpdSix/helpers/extendeddiscord/extendeddiscordpermissions"
 	"rpdSix/helpers/extendedimage"
 )
@@ -23,7 +23,7 @@ import (
 func Initialize() {
 	commands.AddCommand(
 		commands.Command{
-			Run:                         checkedRun,
+			Run:                         checkedrun.Builder(run, requiredPermissions...),
 			Names:                       []string{"bigemoji"},
 			ExpectedPositionalArguments: []string{emojiNameArg, gridSizeArg},
 		},
@@ -39,36 +39,6 @@ const (
 var (
 	requiredPermissions = []int{extendeddiscordpermissions.MANAGE_EMOJIS}
 )
-
-func checkedRun(ctx commands.CommandContext) error {
-	var authorMember, authorMemberErr = ctx.Message.AuthorMember()
-	if authorMemberErr != nil {
-		return authorMemberErr
-	}
-	var extendedAuthorMember = extendeddiscordobjects.ExtendMember(authorMember, ctx.Session)
-	extendedAuthorMember.GuildID = ctx.Message.GuildID // fix
-	var hasAllPermissions, hasAllPermissionsErr = extendedAuthorMember.HasAllPermissions(requiredPermissions...)
-	if hasAllPermissionsErr != nil {
-		return hasAllPermissionsErr
-	}
-	if hasAllPermissions {
-		return run(ctx)
-	}
-
-	var requiredPermissionNames []string
-
-	for _, permission := range requiredPermissions {
-		var permissionName, _ = extendeddiscordpermissions.ValueWithName[permission]
-		// if !contains {
-		// 	panic(fmt.Sprint("??? ", permission, " not found in extendeddiscordpermissions.ValueWithName"))
-		// }
-		requiredPermissionNames = append(requiredPermissionNames, permissionName)
-	}
-
-	return errors.New(fmt.Sprint(
-		"permissions error, author does not have required permissions\n",
-		"required permissions are: ", requiredPermissionNames))
-}
 
 func run(ctx commands.CommandContext) error {
 	if len(ctx.Message.Attachments) == 0 {
