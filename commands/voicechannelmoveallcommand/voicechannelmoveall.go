@@ -71,8 +71,6 @@ foundVoiceState:
 			"Destination Channel ID not found!"))
 	}
 
-	// Consider checking if the destination channel is actually in the guild
-
 	for _, memberToMove := range toMove {
 
 		var guildMemberMoveErr = ctx.Session.GuildMemberMove(
