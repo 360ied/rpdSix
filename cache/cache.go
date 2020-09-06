@@ -69,7 +69,3 @@ type cache struct {
 	VersionRWMutex *sync.RWMutex
 	Version        int // field from ready event
 }
-
-func Register() {
-
-}
