@@ -32,8 +32,8 @@ func (message *ExtendedMessage) Reply(content string) (*discordgo.Message, error
 }
 
 // short form for message.session.ChannelMessageSendComplex(message.ChannelID, &discordgo.MessageSend{...})
-func (message *ExtendedMessage) ComplexReply(send *discordgo.MessageSend) (*discordgo.Message, error) {
-	return message.session.ChannelMessageSendComplex(message.ChannelID, send)
+func (message *ExtendedMessage) ComplexReply(data *discordgo.MessageSend) (*discordgo.Message, error) {
+	return message.session.ChannelMessageSendComplex(message.ChannelID, data)
 }
 
 // short form for message.session.Channel(message.ChannelID)
