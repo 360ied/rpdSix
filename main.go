@@ -7,11 +7,13 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
+	"rpdSix/cache"
 	"rpdSix/commands"
 	"rpdSix/commands/bigemojicommand"
 	"rpdSix/commands/helpcommand"
 	"rpdSix/commands/pingcommand"
 	"rpdSix/commands/saycommand"
+	"rpdSix/commands/voicechannelmoveallcommand"
 	"rpdSix/keepalive"
 )
 
@@ -29,6 +31,8 @@ func main() {
 	bot.AddHandler(ready)
 	bot.AddHandler(messageCreate)
 
+	cache.RegisterEventHandlers(bot)
+
 	// init command map
 	commands.InitCommands()
 	// register commands
@@ -36,6 +40,7 @@ func main() {
 	saycommand.Initialize()
 	helpcommand.Initialize()
 	bigemojicommand.Initialize()
+	voicechannelmoveallcommand.Initialize()
 
 	err = bot.Open()
 

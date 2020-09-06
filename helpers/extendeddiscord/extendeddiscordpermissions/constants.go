@@ -2,7 +2,7 @@ package extendeddiscordpermissions
 
 // https://discord.com/developers/docs/topics/permissions
 // No inspection for snake case usage as snake case is used in the official Discord API documentation
-//goland:noinspection GoSnakeCaseUsage,GoUnnecessarilyExportedIdentifiers
+// goland:noinspection GoSnakeCaseUsage,GoUnnecessarilyExportedIdentifiers
 const (
 	CREATE_INSTANT_INVITE = 0x00000001 // Allows creation of instant invites
 	KICK_MEMBERS          = 0x00000002 // Allows kicking members

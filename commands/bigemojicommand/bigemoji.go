@@ -107,7 +107,7 @@ func run(ctx commands.CommandContext) error {
 
 			var buffer bytes.Buffer
 
-			//goland:noinspection GoNilness
+			// goland:noinspection GoNilness
 			var err8 = png.Encode(&buffer, grid[i][j])
 			if err8 != nil {
 				return err8

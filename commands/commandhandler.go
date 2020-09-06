@@ -137,18 +137,18 @@ func parseArguments(
 						len(expectedPositionalArguments)-1]]
 				if exists {
 					// The length checks should prevent the value from being nil
-					//goland:noinspection GoNilness
+					// goland:noinspection GoNilness
 					returnArguments[
 						expectedPositionalArguments[
 							len(expectedPositionalArguments)-1]] += stringSeparator + currentItem
 				} else {
-					//goland:noinspection GoNilness
+					// goland:noinspection GoNilness
 					returnArguments[
 						expectedPositionalArguments[
 							len(expectedPositionalArguments)-1]] = currentItem
 				}
 			} else {
-				//goland:noinspection GoNilness
+				// goland:noinspection GoNilness
 				returnArguments[
 					expectedPositionalArguments[
 						currentPosition]] = currentItem
@@ -158,7 +158,7 @@ func parseArguments(
 		currentPosition++
 	}
 
-	//goland:noinspection GoNilness
+	// goland:noinspection GoNilness
 	for key, value := range returnArguments {
 		key = strings.ToLower(key)
 		var _, exists = keywordArgumentAliases[key]
