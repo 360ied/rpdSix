@@ -16,9 +16,5 @@ func KeepAlive() {
 		}
 	})
 
-	var err = http.ListenAndServe(":8080", nil)
-
-	if err != nil {
-		panic(err)
-	}
+	panic(http.ListenAndServe(":8080", nil))
 }
