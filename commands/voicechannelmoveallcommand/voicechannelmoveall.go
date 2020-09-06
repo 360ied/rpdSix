@@ -34,10 +34,10 @@ var (
 
 func run(ctx commands.CommandContext) error {
 
-	var messageGuild, messageGuildErr = ctx.Message.Guild()
-	if messageGuildErr != nil {
-		return messageGuildErr
-	}
+	// var messageGuild, messageGuildErr = ctx.Message.Guild()
+	// if messageGuildErr != nil {
+	// 	return messageGuildErr
+	// }
 
 	var authorVoiceState *discordgo.VoiceState
 
@@ -45,7 +45,7 @@ func run(ctx commands.CommandContext) error {
 	defer cache.Cache.GuildsRWMutex.RUnlock()
 
 	for _, voiceState := range cache.Cache.Guilds[ctx.Message.GuildID].VoiceStates {
-		fmt.Println(voiceState.UserID)
+		// fmt.Println(voiceState.UserID)
 		if voiceState.UserID == ctx.Message.Author.ID {
 			authorVoiceState = voiceState
 			goto foundVoiceState
