@@ -31,17 +31,18 @@ func Builder(
 
 		if hasAllPermissions {
 			return callBack(ctx)
+		} else {
+
+			var requiredPermissionNames []string
+
+			for _, permission := range requiredPermissions {
+				var permissionName = extendeddiscordpermissions.ValueWithName[permission]
+				requiredPermissionNames = append(requiredPermissionNames, permissionName)
+			}
+
+			return errors.New(fmt.Sprint(
+				"permissions error, author does not have required permissions\n",
+				"required permissions are: ", requiredPermissionNames))
 		}
-
-		var requiredPermissionNames []string
-
-		for _, permission := range requiredPermissions {
-			var permissionName = extendeddiscordpermissions.ValueWithName[permission]
-			requiredPermissionNames = append(requiredPermissionNames, permissionName)
-		}
-
-		return errors.New(fmt.Sprint(
-			"permissions error, author does not have required permissions\n",
-			"required permissions are: ", requiredPermissionNames))
 	}
 }
