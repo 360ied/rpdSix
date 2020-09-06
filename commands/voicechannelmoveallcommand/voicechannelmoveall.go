@@ -53,7 +53,7 @@ func run(ctx commands.CommandContext) error {
 	}
 
 	return errors.New(fmt.Sprint(memberNotInVoiceChannelErrorTemplate,
-		"Member ID ", ctx.Message.Author.ID, "'s voice state not found in Guild ID ", ctx.Message.GuildID))
+		"It does not appear that you are in a voice channel."))
 
 foundVoiceState:
 
