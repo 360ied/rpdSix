@@ -346,8 +346,11 @@ func voiceStateUpdateEventHandler(session *discordgo.Session, event *discordgo.V
 	for i, voiceState := range guild.VoiceStates {
 		if voiceState.UserID == event.UserID {
 			guild.VoiceStates[i] = voiceState
+			return
 		}
 	}
+
+	guild.VoiceStates = append(guild.VoiceStates, event.VoiceState)
 }
 
 func webhooksUpdateEventHandler(session *discordgo.Session, event *discordgo.WebhooksUpdate) {
