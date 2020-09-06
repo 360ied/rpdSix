@@ -41,10 +41,16 @@ func run(ctx commands.CommandContext) error {
 
 	var authorVoiceState *discordgo.VoiceState
 
-	cache.Cache.GuildsRWMutex.RLock()
-	defer cache.Cache.GuildsRWMutex.RUnlock()
 
-	for _, voiceState := range cache.Cache.Guilds[ctx.Message.GuildID].VoiceStates {
+
+	var cachedGuild = func() *discordgo.Guild {
+		cache.Cache.GuildsRWMutex.RLock()
+		defer cache.Cache.GuildsRWMutex.RUnlock()
+
+		return cache.Cache.Guilds[ctx.Message.GuildID]
+	}()
+
+	for _, voiceState := range cachedGuild.VoiceStates {
 		// fmt.Println(voiceState.UserID)
 		if voiceState.UserID == ctx.Message.Author.ID {
 			authorVoiceState = voiceState
@@ -59,7 +65,7 @@ foundVoiceState:
 
 	var toMove []*discordgo.VoiceState
 
-	for _, voiceState := range cache.Cache.Guilds[ctx.Message.GuildID].VoiceStates {
+	for _, voiceState := range cachedGuild.VoiceStates {
 		if voiceState.ChannelID == authorVoiceState.ChannelID {
 			toMove = append(toMove, voiceState)
 		}
