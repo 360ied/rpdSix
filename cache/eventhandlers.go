@@ -90,7 +90,10 @@ func guildBanRemoveEventHandler(session *discordgo.Session, event *discordgo.Gui
 }
 
 func guildCreateEventHandler(session *discordgo.Session, event *discordgo.GuildCreate) {
+	Cache.GuildsRWMutex.Lock()
+	defer Cache.GuildsRWMutex.Unlock()
 
+	Cache.Guilds[event.ID] = event.Guild
 }
 
 func guildDeleteEventHandler(session *discordgo.Session, event *discordgo.GuildDelete) {
