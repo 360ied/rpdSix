@@ -41,8 +41,6 @@ func run(ctx commands.CommandContext) error {
 
 	var authorVoiceState *discordgo.VoiceState
 
-
-
 	var cachedGuild = func() *discordgo.Guild {
 		cache.Cache.GuildsRWMutex.RLock()
 		defer cache.Cache.GuildsRWMutex.RUnlock()
