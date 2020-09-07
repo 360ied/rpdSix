@@ -61,8 +61,7 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 	if endIndex == -1 {
 		commandName = message.Content[len(prefix):]
 	} else {
-		commandName = message.Content[
-			len(prefix):strings.Index(message.Content, stringSeparator)]
+		commandName = message.Content[len(prefix):endIndex]
 	}
 
 	var command, exists = Commands[commandName]
