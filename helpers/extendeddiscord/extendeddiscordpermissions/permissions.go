@@ -1,9 +1,5 @@
 package extendeddiscordpermissions
 
-func IsPermitted(permissionsInteger, permission int) bool {
-	return permissionsInteger&permission == permission || permissionsInteger&ADMINISTRATOR == ADMINISTRATOR
-}
-
 func IsPermittedAll(permissionInteger int, permissions ...int) bool {
 	if permissionInteger&ADMINISTRATOR == ADMINISTRATOR {
 		return true
