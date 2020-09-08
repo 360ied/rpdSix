@@ -49,7 +49,7 @@ func run(ctx commands.CommandContext) error {
 			for key, value := range command.KeywordArgumentAliases {
 				formattedKeywordArgumentAliasesStringArray = append(
 					formattedKeywordArgumentAliasesStringArray,
-					fmt.Sprint("`", key, "`: `", value, "`"))
+					fmt.Sprintf("`%v`: `%v`", key, value)
 			}
 
 			var _, err = ctx.Message.Reply(
