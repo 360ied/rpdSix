@@ -33,7 +33,7 @@ func run(ctx commands.CommandContext) error {
 			for _, value := range command.Names {
 				formattedCommandNames = append(
 					formattedCommandNames,
-					fmt.Sprint("`", value, "`"))
+					fmt.Sprintf("`%v`", value))
 			}
 
 			var formattedExpectedPositionalArguments []string
@@ -41,7 +41,7 @@ func run(ctx commands.CommandContext) error {
 			for _, value := range command.ExpectedPositionalArguments {
 				formattedExpectedPositionalArguments = append(
 					formattedExpectedPositionalArguments,
-					fmt.Sprint("`", value, "`"))
+					fmt.Sprintf("`%v`", value))
 			}
 
 			var formattedKeywordArgumentAliasesStringArray []string
