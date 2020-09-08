@@ -69,7 +69,7 @@ func run(ctx commands.CommandContext) error {
 		// list commands
 		var outputStr = "Commands:\n"
 		for commandName := range commands.Commands {
-			outputStr += fmt.Sprint("`", commandName, "`, ")
+			outputStr += fmt.Sprintf("`%v`, ", commandName)
 		}
 		outputStr = outputStr[:len(outputStr)-len(", ")]
 		var _, err = ctx.Message.Reply(outputStr)
