@@ -64,10 +64,6 @@ func runPurgeUntil(ctx commands.CommandContext, untilID string) error {
 			messageIDs[index] = message.ID
 		}
 
-		if len(messageIDs) < 100 {
-			messageIDs = append(messageIDs, untilID)
-		}
-
 		var channelMessagesBulkDeleteErr = ctx.Session.ChannelMessagesBulkDelete(
 			ctx.Message.ChannelID, messageIDs)
 		if channelMessagesBulkDeleteErr != nil {
@@ -77,7 +73,7 @@ func runPurgeUntil(ctx commands.CommandContext, untilID string) error {
 		untilID = messageIDs[len(messageIDs)-1]
 	}
 
-	return nil
+	return ctx.Session.ChannelMessageDelete(ctx.Message.ChannelID, untilID)
 }
 
 func runPurgeFromTo(ctx commands.CommandContext, fromID string, untilID string) error {
