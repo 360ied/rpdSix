@@ -60,3 +60,8 @@ func (message *ExtendedMessage) AuthorMember() (*discordgo.Member, error) {
 	return nil, errors.New(fmt.Sprint(helpers.MemberNotFoundErrorTemplate,
 		"member ", message.Author.ID, " not found in guild ", message.GuildID))
 }
+
+// short form for message.session.ChannelMessageDelete(message.ChannelID, message.ID)
+func (message *ExtendedMessage) Delete() error {
+	return message.session.ChannelMessageDelete(message.ChannelID, message.ID)
+}
