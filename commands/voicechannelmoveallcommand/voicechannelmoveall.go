@@ -89,7 +89,8 @@ foundVoiceState:
 			&destinationChannelID)
 
 		if guildMemberMoveErr != nil {
-			return guildMemberMoveErr
+			_, _ = ctx.Message.Reply(fmt.Sprintf(
+				"An Error occured while moving member ID %v\n%v", memberToMove.UserID, guildMemberMoveErr))
 		}
 	}
 
