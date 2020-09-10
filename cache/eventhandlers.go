@@ -590,7 +590,15 @@ func voiceStateUpdateEventHandler(session *discordgo.Session, event *discordgo.V
 
 	for i, voiceState := range guild.VoiceStates {
 		if voiceState.UserID == event.UserID {
-			guild.VoiceStates[i] = voiceState
+			if event.ChannelID == "" { // member disconnected
+				// remove voice state from cache
+				// swap voice state with last voice state
+				guild.VoiceStates[i] = guild.VoiceStates[len(guild.VoiceStates)-1]
+				// slice off the last voice state
+				guild.VoiceStates = guild.VoiceStates[:len(guild.VoiceStates)-1]
+			} else { // member voice state changed
+				guild.VoiceStates[i] = voiceState
+			}
 			return
 		}
 	}
