@@ -55,7 +55,7 @@ func RegisterEventHandlers(bot *discordgo.Session) {
 
 func channelCreateEventHandler(_ *discordgo.Session, event *discordgo.ChannelCreate) {
 	// a channel is created
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -70,7 +70,7 @@ func channelCreateEventHandler(_ *discordgo.Session, event *discordgo.ChannelCre
 
 func channelDeleteEventHandler(_ *discordgo.Session, event *discordgo.ChannelDelete) {
 	// a channel is deleted
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -93,7 +93,7 @@ func channelDeleteEventHandler(_ *discordgo.Session, event *discordgo.ChannelDel
 }
 
 func channelPinsUpdateEventHandler(_ *discordgo.Session, event *discordgo.ChannelPinsUpdate) {
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -113,7 +113,7 @@ func channelPinsUpdateEventHandler(_ *discordgo.Session, event *discordgo.Channe
 }
 
 func channelUpdateEventHandler(_ *discordgo.Session, event *discordgo.ChannelUpdate) {
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -168,7 +168,7 @@ func guildDeleteEventHandler(_ *discordgo.Session, event *discordgo.GuildDelete)
 
 func guildEmojisUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildEmojisUpdate) {
 	// emojis got updated
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -211,7 +211,7 @@ func guildIntegrationsUpdateEventHandler(*discordgo.Session, *discordgo.GuildInt
 
 func guildMemberAddEventHandler(_ *discordgo.Session, event *discordgo.GuildMemberAdd) {
 	// new user joined the guild, so don't need to check whether to update existing user or not
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -226,7 +226,7 @@ func guildMemberAddEventHandler(_ *discordgo.Session, event *discordgo.GuildMemb
 
 func guildMemberRemoveEventHandler(_ *discordgo.Session, event *discordgo.GuildMemberRemove) {
 	// member left guild
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -251,7 +251,7 @@ func guildMemberRemoveEventHandler(_ *discordgo.Session, event *discordgo.GuildM
 
 func guildMemberUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildMemberUpdate) {
 	// existing member is updated
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -285,7 +285,7 @@ func guildMembersChunkEventHandler(*discordgo.Session, *discordgo.GuildMembersCh
 
 func guildRoleCreateEventHandler(_ *discordgo.Session, event *discordgo.GuildRoleCreate) {
 	// a new role is created
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -300,7 +300,7 @@ func guildRoleCreateEventHandler(_ *discordgo.Session, event *discordgo.GuildRol
 
 func guildRoleDeleteEventHandler(_ *discordgo.Session, event *discordgo.GuildRoleDelete) {
 	// a role is deleted
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -325,7 +325,7 @@ func guildRoleDeleteEventHandler(_ *discordgo.Session, event *discordgo.GuildRol
 
 func guildRoleUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildRoleUpdate) {
 	// existing role is updated
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
@@ -348,7 +348,7 @@ func guildRoleUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildRol
 func guildUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildUpdate) {
 	// entire guild is updated
 	// but some elements are not included in the event
-	var guildUnion = func() *cacheGuild {
+	var guildUnion = func() cacheGuild {
 		Cache.GuildsRWMutex.RLock()
 		defer Cache.GuildsRWMutex.RUnlock()
 
