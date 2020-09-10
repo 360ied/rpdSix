@@ -53,91 +53,333 @@ func RegisterEventHandlers(bot *discordgo.Session) {
 	bot.AddHandler(webhooksUpdateEventHandler)
 }
 
-func channelCreateEventHandler(session *discordgo.Session, event *discordgo.ChannelCreate) {
+func channelCreateEventHandler(_ *discordgo.Session, event *discordgo.ChannelCreate) {
+	// a channel is created
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	guildUnion.Channels = append(guildUnion.Channels, event.Channel)
 }
 
-func channelDeleteEventHandler(session *discordgo.Session, event *discordgo.ChannelDelete) {
+func channelDeleteEventHandler(_ *discordgo.Session, event *discordgo.ChannelDelete) {
+	// a channel is deleted
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	for channelIndex, channel := range guildUnion.Channels {
+		if channel.ID == event.ID {
+			// remove the channel
+			// swap the member with the last channel
+			guildUnion.Channels[channelIndex] = guildUnion.Channels[len(guildUnion.Channels)-1]
+			// slice off the last channel
+			guildUnion.Channels = guildUnion.Channels[:len(guildUnion.Channels)-1]
+			break
+		}
+	}
 }
 
-func channelPinsUpdateEventHandler(session *discordgo.Session, event *discordgo.ChannelPinsUpdate) {
+func channelPinsUpdateEventHandler(_ *discordgo.Session, event *discordgo.ChannelPinsUpdate) {
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	// TODO: I think there's a way to hold the lock for less time, but I'm not so sure about it.
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	for _, channel := range guildUnion.Channels {
+		if channel.ID == event.ChannelID {
+			channel.LastPinTimestamp = discordgo.Timestamp(event.LastPinTimestamp)
+			break
+		}
+	}
 }
 
-func channelUpdateEventHandler(session *discordgo.Session, event *discordgo.ChannelUpdate) {
+func channelUpdateEventHandler(_ *discordgo.Session, event *discordgo.ChannelUpdate) {
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	// TODO: I think there's a way to hold the lock for less time, but I'm not so sure about it.
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	for channelIndex, channel := range guildUnion.Channels {
+		if channel.ID == event.ID {
+			guildUnion.Channels[channelIndex] = event.Channel
+			break
+		}
+	}
 }
 
-func connectEventHandler(session *discordgo.Session, event *discordgo.Connect) {
-
+func connectEventHandler(*discordgo.Session, *discordgo.Connect) {
+	// synthetic event
 }
 
-func disconnectEventHandler(session *discordgo.Session, event *discordgo.Disconnect) {
-
+func disconnectEventHandler(*discordgo.Session, *discordgo.Disconnect) {
+	// synthetic event
 }
 
-func eventEventHandler(session *discordgo.Session, event *discordgo.Event) {
-
+func eventEventHandler(*discordgo.Session, *discordgo.Event) {
+	// redundant
 }
 
-func guildBanAddEventHandler(session *discordgo.Session, event *discordgo.GuildBanAdd) {
-
+func guildBanAddEventHandler(*discordgo.Session, *discordgo.GuildBanAdd) {
+	// I don't see anywhere I could store this or why I even should store it.
 }
 
-func guildBanRemoveEventHandler(session *discordgo.Session, event *discordgo.GuildBanRemove) {
-
+func guildBanRemoveEventHandler(*discordgo.Session, *discordgo.GuildBanRemove) {
+	// I don't see anywhere I could store this or why I even should store it.
 }
 
 func guildCreateEventHandler(_ *discordgo.Session, event *discordgo.GuildCreate) {
 	Cache.GuildsRWMutex.Lock()
 	defer Cache.GuildsRWMutex.Unlock()
 
-	Cache.Guilds[event.ID] = event.Guild
+	Cache.Guilds[event.ID] = cacheifyGuild(event.Guild)
 }
 
-func guildDeleteEventHandler(session *discordgo.Session, event *discordgo.GuildDelete) {
+func guildDeleteEventHandler(_ *discordgo.Session, event *discordgo.GuildDelete) {
+	Cache.GuildsRWMutex.Lock()
+	defer Cache.GuildsRWMutex.Unlock()
 
+	Cache.Guilds[event.ID] = cacheifyGuild(event.Guild)
 }
 
-func guildEmojisUpdateEventHandler(session *discordgo.Session, event *discordgo.GuildEmojisUpdate) {
+func guildEmojisUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildEmojisUpdate) {
+	// emojis got updated
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	var emojiMap = map[string]*discordgo.Emoji{}
+
+	for _, emoji := range event.Emojis {
+		emojiMap[emoji.ID] = emoji
+	}
+
+	// only lock here as locking above is unneeded
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	for emojiIndex, emoji := range guildUnion.Emojis {
+		if updatedEmoji, in := emojiMap[emoji.ID]; in {
+			guildUnion.Emojis[emojiIndex] = updatedEmoji
+			delete(emojiMap, emoji.ID)
+		}
+	}
+
+	for _, emoji := range emojiMap {
+		guildUnion.Emojis = append(guildUnion.Emojis, emoji)
+	}
 }
 
-func guildIntegrationsUpdateEventHandler(session *discordgo.Session, event *discordgo.GuildIntegrationsUpdate) {
+func guildIntegrationsUpdateEventHandler(*discordgo.Session, *discordgo.GuildIntegrationsUpdate) {
+	/*
+		type GuildIntegrationsUpdate struct {
+			GuildID string `json:"guild_id"`
+		}
 
+		...
+
+		What am i supposed to do with this?
+	*/
 }
 
-func guildMemberAddEventHandler(session *discordgo.Session, event *discordgo.GuildMemberAdd) {
+func guildMemberAddEventHandler(_ *discordgo.Session, event *discordgo.GuildMemberAdd) {
+	// new user joined the guild, so don't need to check whether to update existing user or not
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	guildUnion.Members = append(guildUnion.Members, event.Member)
 }
 
-func guildMemberRemoveEventHandler(session *discordgo.Session, event *discordgo.GuildMemberRemove) {
+func guildMemberRemoveEventHandler(_ *discordgo.Session, event *discordgo.GuildMemberRemove) {
+	// member left guild
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	// TODO: I think there's a way to hold the lock for less time, but I'm not so sure about it.
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	for memberIndex, member := range guildUnion.Members {
+		if member.User.ID == event.User.ID {
+			// remove the member
+			// swap the member with the last member
+			guildUnion.Members[memberIndex] = guildUnion.Members[len(guildUnion.Members)-1]
+			// slice off the last member
+			guildUnion.Members = guildUnion.Members[:len(guildUnion.Members)-1]
+			break
+		}
+	}
 }
 
-func guildMemberUpdateEventHandler(session *discordgo.Session, event *discordgo.GuildMemberUpdate) {
+func guildMemberUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildMemberUpdate) {
+	// existing member is updated
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	// TODO: Consider using a different method as this does not scale with large guilds
+
+	for memberIndex, member := range guildUnion.Members {
+		if member.User.ID == event.User.ID {
+			guildUnion.Members[memberIndex] = event.Member
+			break
+		}
+	}
 }
 
-func guildMembersChunkEventHandler(session *discordgo.Session, event *discordgo.GuildMembersChunk) {
+func guildMembersChunkEventHandler(*discordgo.Session, *discordgo.GuildMembersChunk) {
+	/*
+		From Discord API Documentation:
+		Sent in response to Guild Request Members.
+		You can use the chunk_index and chunk_count to calculate how many chunks are left for your request.
 
+		...
+
+		What am I supposed to do with this?
+	*/
 }
 
-func guildRoleCreateEventHandler(session *discordgo.Session, event *discordgo.GuildRoleCreate) {
+func guildRoleCreateEventHandler(_ *discordgo.Session, event *discordgo.GuildRoleCreate) {
+	// a new role is created
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	guildUnion.Roles = append(guildUnion.Roles, event.Role)
 }
 
-func guildRoleDeleteEventHandler(session *discordgo.Session, event *discordgo.GuildRoleDelete) {
+func guildRoleDeleteEventHandler(_ *discordgo.Session, event *discordgo.GuildRoleDelete) {
+	// a role is deleted
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	// TODO: I think there's a way to hold the lock for less time, but I'm not so sure about it.
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	for roleIndex, role := range guildUnion.Roles {
+		if role.ID == event.RoleID {
+			// remove the role
+			// swap the member with the last role
+			guildUnion.Roles[roleIndex] = guildUnion.Roles[len(guildUnion.Roles)-1]
+			// slice off the last role
+			guildUnion.Roles = guildUnion.Roles[:len(guildUnion.Roles)-1]
+			break
+		}
+	}
 }
 
-func guildRoleUpdateEventHandler(session *discordgo.Session, event *discordgo.GuildRoleUpdate) {
+func guildRoleUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildRoleUpdate) {
+	// existing role is updated
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.GuildID]
+	}()
+
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	// TODO: This might not be very efficient
+
+	for roleIndex, role := range guildUnion.Roles {
+		if role.ID == event.Role.ID {
+			guildUnion.Roles[roleIndex] = event.Role
+			break
+		}
+	}
 }
 
-func guildUpdateEventHandler(session *discordgo.Session, event *discordgo.GuildUpdate) {
+func guildUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildUpdate) {
+	// entire guild is updated
+	// but some elements are not included in the event
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
+		return Cache.Guilds[event.ID]
+	}()
+
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	// cache elements not included in guild update event
+	var joinedAt = guildUnion.JoinedAt
+	var large = guildUnion.Large
+	var unavailable = guildUnion.Unavailable
+	var memberCount = guildUnion.MemberCount
+	var voiceStates = guildUnion.VoiceStates
+	var members = guildUnion.Members
+	var channels = guildUnion.Channels
+	var presences = guildUnion.Presences
+
+	// set guild to the updated guild
+	guildUnion.Guild = event.Guild
+
+	// restore elements not included in guild update event
+	guildUnion.JoinedAt = joinedAt
+	guildUnion.Large = large
+	guildUnion.Unavailable = unavailable
+	guildUnion.MemberCount = memberCount
+	guildUnion.VoiceStates = voiceStates
+	guildUnion.Members = members
+	guildUnion.Channels = channels
+	guildUnion.Presences = presences
 }
 
 func messageAckEventHandler(session *discordgo.Session, event *discordgo.MessageAck) {
@@ -195,7 +437,7 @@ func readyEventHandler(_ *discordgo.Session, event *discordgo.Ready) {
 		fmt.Println("Filling guilds...")
 
 		for _, guild := range event.Guilds {
-			Cache.Guilds[guild.ID] = guild
+			Cache.Guilds[guild.ID] = cacheifyGuild(guild)
 		}
 	}() // Fill guilds
 

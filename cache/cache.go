@@ -9,7 +9,7 @@ import (
 var (
 	Cache = cache{
 		GuildsRWMutex:            &sync.RWMutex{},
-		Guilds:                   make(map[string]*discordgo.Guild),
+		Guilds:                   make(map[string]cacheGuild),
 		PrivateChannelsRWMutex:   &sync.RWMutex{},
 		PrivateChannels:          make(map[string]*discordgo.Channel),
 		UserRWMutex:              &sync.RWMutex{},
@@ -37,7 +37,7 @@ type cache struct {
 	// Session *discordgo.Session
 
 	GuildsRWMutex *sync.RWMutex
-	Guilds        map[string]*discordgo.Guild // key is guild ID
+	Guilds        map[string]cacheGuild // key is guild ID
 
 	PrivateChannelsRWMutex *sync.RWMutex
 	PrivateChannels        map[string]*discordgo.Channel // key is channel ID
@@ -68,4 +68,16 @@ type cache struct {
 
 	VersionRWMutex *sync.RWMutex
 	Version        int // field from ready event
+}
+
+type cacheGuild struct {
+	*discordgo.Guild
+	*sync.RWMutex
+}
+
+func cacheifyGuild(guild *discordgo.Guild) cacheGuild {
+	return cacheGuild{
+		Guild:   guild,
+		RWMutex: &sync.RWMutex{},
+	}
 }

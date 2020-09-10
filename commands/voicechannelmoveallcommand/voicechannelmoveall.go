@@ -3,6 +3,7 @@ package voicechannelmoveallcommand
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/bwmarrin/discordgo"
 
@@ -41,12 +42,17 @@ func run(ctx commands.CommandContext) error {
 
 	var authorVoiceState *discordgo.VoiceState
 
-	var cachedGuild = func() *discordgo.Guild {
+	var cachedGuild, cachedGuildRWMutex = func() (*discordgo.Guild, *sync.RWMutex) {
 		cache.Cache.GuildsRWMutex.RLock()
 		defer cache.Cache.GuildsRWMutex.RUnlock()
 
-		return cache.Cache.Guilds[ctx.Message.GuildID]
+		var get = cache.Cache.Guilds[ctx.Message.GuildID]
+
+		return get.Guild, get.RWMutex
 	}()
+
+	cachedGuildRWMutex.RLock()
+	defer cachedGuildRWMutex.RUnlock()
 
 	for _, voiceState := range cachedGuild.VoiceStates {
 		// fmt.Println(voiceState.UserID)
