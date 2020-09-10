@@ -582,7 +582,7 @@ func voiceServerUpdateEventHandler(session *discordgo.Session, event *discordgo.
 
 }
 
-func voiceStateUpdateEventHandler(session *discordgo.Session, event *discordgo.VoiceStateUpdate) {
+func voiceStateUpdateEventHandler(_ *discordgo.Session, event *discordgo.VoiceStateUpdate) {
 	Cache.GuildsRWMutex.Lock()
 	defer Cache.GuildsRWMutex.Unlock()
 
