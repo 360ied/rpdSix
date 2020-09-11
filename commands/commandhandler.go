@@ -136,10 +136,10 @@ func parseArguments(
 			// Set by positional argument
 			// Allow the last positional argument to have the separator in between
 			if currentPosition >= len(expectedPositionalArguments) {
-				var _, exists = returnArguments[
+				var _, in = returnArguments[
 					expectedPositionalArguments[
 						len(expectedPositionalArguments)-1]]
-				if exists {
+				if in {
 					// The length checks should prevent the value from being nil
 					// goland:noinspection GoNilness
 					returnArguments[
