@@ -12,7 +12,7 @@ import (
 	"rpdSix/commands/bigemojicommand"
 	"rpdSix/commands/helpcommand"
 	"rpdSix/commands/pingcommand"
-	purgecommandpackage "rpdSix/commands/purgecommand"
+	"rpdSix/commands/purgecommand"
 	"rpdSix/commands/saycommand"
 	"rpdSix/commands/voicechannelmoveallcommand"
 	"rpdSix/keepalive"
@@ -42,7 +42,7 @@ func main() {
 	helpcommand.Initialize()
 	bigemojicommand.Initialize()
 	voicechannelmoveallcommand.Initialize()
-	purgecommandpackage.Initialize()
+	purgecommand.Initialize()
 
 	err = bot.Open()
 

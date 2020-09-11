@@ -1,4 +1,4 @@
-package purgecommandpackage
+package purgecommand
 
 import (
 	"errors"
