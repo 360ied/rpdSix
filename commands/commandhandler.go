@@ -79,6 +79,15 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 			command.KeywordArgumentAliases),
 	}
 
+	defer func() {
+		if panicErr := recover(); panicErr != nil {
+			var panicMessage = fmt.Sprintf("Panic while executing %v!\nMessage: %v\nArguments: %v\nError: %v",
+				commandName, message.Content, context.Arguments, panicErr)
+			fmt.Println(panicMessage)
+			_, _ = context.Message.Reply(panicMessage)
+		}
+	}()
+
 	var err = command.Run(context)
 	if err != nil {
 		tracerr.PrintSourceColor(err)
