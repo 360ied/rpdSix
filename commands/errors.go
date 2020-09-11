@@ -1,5 +1,5 @@
 package commands
 
-var (
+const (
 	MissingArgumentErrorTemplate = "Commands MissingArgumentError, "
 )
