@@ -110,28 +110,31 @@ func parseArguments(
 
 	var returnArguments = make(map[string]string)
 
-	// if len(separated) == 0 {
-	//	return returnArguments
-	// }
-
+	// Keep track of current position
 	var currentPosition = 0
-
 	for len(separated) > 0 {
-		// remove first element from slice
+		// Set current item
 		var currentItem = separated[0]
+		// Remove current item from processing queue
 		separated = separated[1:]
-
-		var currentArgumentValue []string
-
+		// Parse --arg arguments
 		if strings.HasPrefix(currentItem, keywordArgumentPrefix) {
+			var currentArgumentValue []string
+			// Do not take the next keyword argument as part of the current value
+			// Iterate through the processing queue
+			// Note: For presence arguments, check for presence in the dictionary, not for its boolean value
 			for len(separated) > 0 && !strings.HasPrefix(separated[0], keywordArgumentPrefix) {
+				// Append value and Remove processed value from the processing queue
 				currentArgumentValue = append(currentArgumentValue, separated[0])
 				separated = separated[1:]
 				currentPosition++
 			}
+			// Set the current value
 			returnArguments[currentItem[len(keywordArgumentPrefix):]] = strings.Join(
 				currentArgumentValue, stringSeparator)
 		} else {
+			// Set by positional argument
+			// Allow the last positional argument to have the separator in between
 			if currentPosition >= len(expectedPositionalArguments) {
 				var _, exists = returnArguments[
 					expectedPositionalArguments[
