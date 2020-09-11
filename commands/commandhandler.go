@@ -122,7 +122,7 @@ func parseArguments(
 			var currentArgumentValue []string
 			// Do not take the next keyword argument as part of the current value
 			// Iterate through the processing queue
-			// Note: For presence arguments, check for presence in the dictionary, not for its boolean value
+			// Note: For presence arguments, check for presence in the map, not for its boolean value
 			for len(separated) > 0 && !strings.HasPrefix(separated[0], keywordArgumentPrefix) {
 				// Append value and Remove processed value from the processing queue
 				currentArgumentValue = append(currentArgumentValue, separated[0])
