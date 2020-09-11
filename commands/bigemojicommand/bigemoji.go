@@ -86,8 +86,10 @@ func run(ctx commands.CommandContext) error {
 		for j := 0; j < gridSize; j++ {
 			row = append(row, img.(extendedimage.SubImager).SubImage(
 				image.Rect(
-					partitionSizeX*j, partitionSizeY*i,
-					partitionSizeX*j+partitionSizeX, partitionSizeY*i+partitionSizeY)))
+					partitionSizeX*j,
+					partitionSizeY*i,
+					partitionSizeX*j+partitionSizeX,
+					partitionSizeY*i+partitionSizeY)))
 		}
 		grid = append(grid, row)
 	}
