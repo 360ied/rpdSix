@@ -14,6 +14,8 @@ const (
 	commandPrefix         = "'"
 	keywordArgumentPrefix = "--"
 	stringSeparator       = " "
+
+	ignoredPositionalArgumentName = "_"
 )
 
 var (
@@ -40,6 +42,11 @@ func InitCommands() {
 
 // Adds a command to the Commands map
 func AddCommand(command Command) {
+	// Ignore positional arguments instead of panicking
+	// when command does not accept any positional arguments but positional arguments are given
+	if len(command.ExpectedPositionalArguments) == 0 {
+		command.ExpectedPositionalArguments = []string{ignoredPositionalArgumentName}
+	}
 	for _, name := range command.Names {
 		Commands[name] = command
 	}
