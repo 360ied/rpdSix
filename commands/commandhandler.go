@@ -181,8 +181,8 @@ func parseArguments(
 	// goland:noinspection GoNilness
 	for key, value := range returnArguments {
 		key = strings.ToLower(key)
-		var _, exists = keywordArgumentAliases[key]
-		if exists {
+		var _, in = keywordArgumentAliases[key]
+		if in {
 			returnArguments[keywordArgumentAliases[key]] = value
 		}
 	}
