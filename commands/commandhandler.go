@@ -125,10 +125,12 @@ func parseArguments(
 
 		if strings.HasPrefix(currentItem, keywordArgumentPrefix) {
 			for len(separated) > 0 && !strings.HasPrefix(separated[0], keywordArgumentPrefix) {
-				_ = append(currentArgumentValue, separated[0])
+				currentArgumentValue = append(currentArgumentValue, separated[0])
 				separated = separated[1:]
 				currentPosition++
 			}
+			returnArguments[currentItem[len(keywordArgumentPrefix):]] = strings.Join(
+				currentArgumentValue, stringSeparator)
 		} else {
 			if currentPosition >= len(expectedPositionalArguments) {
 				var _, exists = returnArguments[
