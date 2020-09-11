@@ -583,28 +583,33 @@ func voiceServerUpdateEventHandler(session *discordgo.Session, event *discordgo.
 }
 
 func voiceStateUpdateEventHandler(_ *discordgo.Session, event *discordgo.VoiceStateUpdate) {
-	Cache.GuildsRWMutex.Lock()
-	defer Cache.GuildsRWMutex.Unlock()
+	var guildUnion = func() cacheGuild {
+		Cache.GuildsRWMutex.RLock()
+		defer Cache.GuildsRWMutex.RUnlock()
 
-	var guild = Cache.Guilds[event.GuildID]
+		return Cache.Guilds[event.GuildID]
+	}()
 
-	for voiceStateIndex, voiceState := range guild.VoiceStates {
+	guildUnion.Lock()
+	defer guildUnion.Unlock()
+
+	for voiceStateIndex, voiceState := range guildUnion.VoiceStates {
 		if voiceState.UserID == event.UserID {
 			if event.ChannelID == "" { // member disconnected
 				// remove voice state from cache
 				// swap voice state with last voice state
-				guild.VoiceStates[voiceStateIndex] = guild.VoiceStates[len(guild.VoiceStates)-1]
+				guildUnion.VoiceStates[voiceStateIndex] = guildUnion.VoiceStates[len(guildUnion.VoiceStates)-1]
 				// slice off the last voice state
-				guild.VoiceStates = guild.VoiceStates[:len(guild.VoiceStates)-1]
+				guildUnion.VoiceStates = guildUnion.VoiceStates[:len(guildUnion.VoiceStates)-1]
 			} else { // member voice state changed
-				guild.VoiceStates[voiceStateIndex] = voiceState
+				guildUnion.VoiceStates[voiceStateIndex] = voiceState
 			}
 			return
 		}
 	}
 
 	// voice state is new so add it
-	guild.VoiceStates = append(guild.VoiceStates, event.VoiceState)
+	guildUnion.VoiceStates = append(guildUnion.VoiceStates, event.VoiceState)
 }
 
 func webhooksUpdateEventHandler(session *discordgo.Session, event *discordgo.WebhooksUpdate) {
