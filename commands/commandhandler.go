@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	prefix                = "'"
+	commandPrefix         = "'"
 	keywordArgumentPrefix = "--"
 	stringSeparator       = " "
 )
@@ -50,7 +50,7 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 	if message.Author.ID == session.State.User.ID {
 		return
 	}
-	if !strings.HasPrefix(message.Content, prefix) {
+	if !strings.HasPrefix(message.Content, commandPrefix) {
 		return
 	}
 
@@ -59,9 +59,9 @@ func HandleMessage(session *discordgo.Session, message *discordgo.MessageCreate)
 	var commandName string
 
 	if endIndex == -1 {
-		commandName = message.Content[len(prefix):]
+		commandName = message.Content[len(commandPrefix):]
 	} else {
-		commandName = message.Content[len(prefix):endIndex]
+		commandName = message.Content[len(commandPrefix):endIndex]
 	}
 
 	var command, exists = Commands[commandName]
