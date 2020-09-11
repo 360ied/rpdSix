@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/ztrue/tracerr"
+
 	"rpdSix/commands"
 	"rpdSix/helpers/extendeddiscord/extendeddiscordobjects"
 	"rpdSix/helpers/extendeddiscord/extendeddiscordpermissions"
@@ -17,7 +19,7 @@ func Builder(
 	return func(ctx commands.CommandContext) error {
 		var authorMember, authorMemberErr = ctx.Message.AuthorMember()
 		if authorMemberErr != nil {
-			return authorMemberErr
+			return tracerr.Wrap(authorMemberErr)
 		}
 		var extendedAuthorMember = extendeddiscordobjects.ExtendMember(authorMember, ctx.Session)
 
@@ -26,7 +28,7 @@ func Builder(
 		var hasAllPermissions, hasAllPermissionsErr = extendedAuthorMember.HasAllPermissions(requiredPermissions...)
 
 		if hasAllPermissionsErr != nil {
-			return hasAllPermissionsErr
+			return tracerr.Wrap(hasAllPermissionsErr)
 		}
 
 		if hasAllPermissions {
@@ -40,9 +42,9 @@ func Builder(
 				requiredPermissionNames = append(requiredPermissionNames, permissionName)
 			}
 
-			return errors.New(fmt.Sprint(
+			return tracerr.Wrap(errors.New(fmt.Sprint(
 				"permissions error, author does not have required permissions\n",
-				"required permissions are: ", requiredPermissionNames))
+				"required permissions are: ", requiredPermissionNames)))
 		}
 	}
 }

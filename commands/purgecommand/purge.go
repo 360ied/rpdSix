@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ztrue/tracerr"
+
 	"rpdSix/commands"
 	"rpdSix/commands/checkedrun"
 	"rpdSix/helpers/extendeddiscord/extendeddiscordpermissions"
@@ -30,14 +32,15 @@ func run(ctx commands.CommandContext) error {
 	// command overloading
 	var arg1, arg1Exists = ctx.Arguments["1"]
 	if !arg1Exists {
-		return errors.New(fmt.Sprint(commands.MissingArgumentErrorTemplate, "purge requires at least 1 argument"))
+		return tracerr.Wrap(errors.New(fmt.Sprint(
+			commands.MissingArgumentErrorTemplate, "purge requires at least 1 argument")))
 	}
 
 	var arg2, arg2Exists = ctx.Arguments["2"]
 
 	var messageDeleteErr = ctx.Message.Delete()
 	if messageDeleteErr != nil {
-		return messageDeleteErr
+		return tracerr.Wrap(messageDeleteErr)
 	}
 
 	if !arg2Exists {
@@ -52,7 +55,7 @@ func runPurgeUntil(ctx commands.CommandContext, untilID string) error {
 		var messages, messagesErr = ctx.Session.ChannelMessages(
 			ctx.Message.ChannelID, 100, "", untilID, "")
 		if messagesErr != nil {
-			return messagesErr
+			return tracerr.Wrap(messagesErr)
 		}
 
 		if len(messages) == 0 {
@@ -67,26 +70,26 @@ func runPurgeUntil(ctx commands.CommandContext, untilID string) error {
 		var channelMessagesBulkDeleteErr = ctx.Session.ChannelMessagesBulkDelete(
 			ctx.Message.ChannelID, messageIDs)
 		if channelMessagesBulkDeleteErr != nil {
-			return channelMessagesBulkDeleteErr
+			return tracerr.Wrap(channelMessagesBulkDeleteErr)
 		}
 
 		untilID = messageIDs[len(messageIDs)-1]
 	}
 
-	return ctx.Session.ChannelMessageDelete(ctx.Message.ChannelID, untilID)
+	return tracerr.Wrap(ctx.Session.ChannelMessageDelete(ctx.Message.ChannelID, untilID))
 }
 
 func runPurgeFromTo(ctx commands.CommandContext, fromID string, untilID string) error {
 	var fromIDuint64, fromIDuint64Err = strconv.ParseUint(fromID, 10, 64)
 	if fromIDuint64Err != nil {
-		return fromIDuint64Err
+		return tracerr.Wrap(fromIDuint64Err)
 	}
 
 	for {
 		var messages, messagesErr = ctx.Session.ChannelMessages(
 			ctx.Message.ChannelID, 100, "", untilID, "")
 		if messagesErr != nil {
-			return messagesErr
+			return tracerr.Wrap(messagesErr)
 		}
 		if len(messages) == 0 {
 			break
@@ -112,7 +115,7 @@ func runPurgeFromTo(ctx commands.CommandContext, fromID string, untilID string) 
 		var channelMessagesBulkDeleteErr = ctx.Session.ChannelMessagesBulkDelete(
 			ctx.Message.ChannelID, messageIDs)
 		if channelMessagesBulkDeleteErr != nil {
-			return channelMessagesBulkDeleteErr
+			return tracerr.Wrap(channelMessagesBulkDeleteErr)
 		}
 
 		untilID = messageIDs[len(messageIDs)-1]

@@ -1,6 +1,8 @@
 package pingcommand
 
 import (
+	"github.com/ztrue/tracerr"
+
 	"rpdSix/commands"
 )
 
@@ -15,5 +17,5 @@ func Initialize() {
 
 func run(ctx commands.CommandContext) error {
 	var _, err = ctx.Message.Reply("Pong!")
-	return err
+	return tracerr.Wrap(err)
 }

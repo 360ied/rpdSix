@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ztrue/tracerr"
 	_ "golang.org/x/image/webp"
 
 	"rpdSix/commands"
@@ -43,7 +44,7 @@ var (
 func run(ctx commands.CommandContext) error {
 	if len(ctx.Message.Attachments) == 0 {
 		var _, err3 = ctx.Message.Reply("No attachments were found!")
-		return err3
+		return tracerr.Wrap(err3)
 	}
 
 	var attachment = ctx.Message.Attachments[0]
@@ -52,12 +53,13 @@ func run(ctx commands.CommandContext) error {
 	if err4 != nil {
 		return err4
 	} else if resp.StatusCode != 200 {
-		return errors.New(fmt.Sprint("status code is not 200, status code is: ", resp.StatusCode))
+		return tracerr.Wrap(errors.New(fmt.Sprint(
+			"status code is not 200, status code is: ", resp.StatusCode)))
 	}
 
 	var img, _, err5 = image.Decode(resp.Body)
 	if err5 != nil {
-		return err5
+		return tracerr.Wrap(err5)
 	}
 
 	var gridSize int
@@ -69,7 +71,7 @@ func run(ctx commands.CommandContext) error {
 	} else {
 		var gridSizeTmp, err6 = strconv.Atoi(gridSizeStr)
 		if err6 != nil {
-			return err6
+			return tracerr.Wrap(err6)
 		}
 		gridSize = gridSizeTmp
 	}
@@ -99,7 +101,7 @@ func run(ctx commands.CommandContext) error {
 	var emojiBaseName, exists3 = ctx.Arguments[emojiNameArg]
 	if !exists3 {
 		var _, err7 = ctx.Message.Reply("Emoji name not found!")
-		return err7
+		return tracerr.Wrap(err7)
 	}
 
 	var messageString = ""
@@ -113,7 +115,7 @@ func run(ctx commands.CommandContext) error {
 			// noinspection GoNilness
 			var err8 = png.Encode(&buffer, grid[i][j])
 			if err8 != nil {
-				return err8
+				return tracerr.Wrap(err8)
 			}
 
 			var encodedImage = base64.StdEncoding.EncodeToString(buffer.Bytes())
@@ -125,7 +127,7 @@ func run(ctx commands.CommandContext) error {
 				fmt.Sprint("data:png;base64,", encodedImage),
 				nil)
 			if err9 != nil {
-				return err9
+				return tracerr.Wrap(err9)
 			}
 
 			messageString += fmt.Sprint(":", emoji.Name, ":")
@@ -138,5 +140,5 @@ func run(ctx commands.CommandContext) error {
 			"Copy the text below:\n",
 			messageString))
 
-	return err10
+	return tracerr.Wrap(err10)
 }

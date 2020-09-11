@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/ztrue/tracerr"
 
 	"rpdSix/cache"
 	"rpdSix/commands"
@@ -62,8 +63,8 @@ func run(ctx commands.CommandContext) error {
 		}
 	}
 
-	return errors.New(fmt.Sprint(memberNotInVoiceChannelErrorTemplate,
-		"It does not appear that you are in a voice channel."))
+	return tracerr.Wrap(errors.New(fmt.Sprint(memberNotInVoiceChannelErrorTemplate,
+		"It does not appear that you are in a voice channel.")))
 
 foundVoiceState:
 
@@ -77,8 +78,8 @@ foundVoiceState:
 
 	var destinationChannelID, destinationChannelArgExists = ctx.Arguments[destinationChannelArg]
 	if !destinationChannelArgExists {
-		return errors.New(fmt.Sprint(commands.MissingArgumentErrorTemplate,
-			"Destination Channel ID not found!"))
+		return tracerr.Wrap(errors.New(fmt.Sprint(commands.MissingArgumentErrorTemplate,
+			"Destination Channel ID not found!")))
 	}
 
 	for _, memberToMove := range toMove {
@@ -95,5 +96,5 @@ foundVoiceState:
 	}
 
 	var _, replyErr = ctx.Message.Reply("Done.")
-	return replyErr
+	return tracerr.Wrap(replyErr)
 }

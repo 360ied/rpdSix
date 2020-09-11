@@ -1,6 +1,8 @@
 package saycommand
 
 import (
+	"github.com/ztrue/tracerr"
+
 	"rpdSix/commands"
 )
 
@@ -20,5 +22,5 @@ const (
 
 func run(ctx commands.CommandContext) error {
 	var _, err = ctx.Message.Reply(ctx.Arguments[toSayArg])
-	return err
+	return tracerr.Wrap(err)
 }

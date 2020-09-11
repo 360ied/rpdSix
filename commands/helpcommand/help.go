@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ztrue/tracerr"
+
 	"rpdSix/commands"
 )
 
@@ -59,11 +61,11 @@ func run(ctx commands.CommandContext) error {
 					strings.Join(formattedExpectedPositionalArguments, ", "),
 					"\nKeyword Argument Aliases: ",
 					strings.Join(formattedKeywordArgumentAliasesStringArray, ", ")))
-			return err
+			return tracerr.Wrap(err)
 		} else {
 			// command doesn't exist
 			var _, err = ctx.Message.Reply("Command not found!")
-			return err
+			return tracerr.Wrap(err)
 		}
 	} else {
 		// list commands
@@ -73,6 +75,6 @@ func run(ctx commands.CommandContext) error {
 		}
 		outputStr = outputStr[:len(outputStr)-len(", ")]
 		var _, err = ctx.Message.Reply(outputStr)
-		return err
+		return tracerr.Wrap(err)
 	}
 }
