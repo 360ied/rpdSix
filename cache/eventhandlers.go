@@ -603,6 +603,7 @@ func voiceStateUpdateEventHandler(_ *discordgo.Session, event *discordgo.VoiceSt
 		}
 	}
 
+	// voice state is new so add it
 	guild.VoiceStates = append(guild.VoiceStates, event.VoiceState)
 }
 
