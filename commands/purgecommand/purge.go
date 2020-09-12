@@ -1,56 +1,35 @@
 package purgecommand
 
 import (
-	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/ztrue/tracerr"
 
 	"rpdSix/commands"
 	"rpdSix/commands/checkedrun"
+	"rpdSix/commands/overload"
 	"rpdSix/helpers/extendeddiscord/extendeddiscordpermissions"
 )
 
 func Initialize() {
 	commands.AddCommand(
 		commands.Command{
-			Run:                         checkedrun.Builder(run, requiredPermissions...),
-			Names:                       []string{"purge"},
-			ExpectedPositionalArguments: expectedPositionalArguments,
+			Run: checkedrun.Builder(
+				overload.Builder(map[int]func(commands.CommandContext, ...string) error{
+					1: runPurgeUntil,
+					2: runPurgeFromTo,
+				}), requiredPermissions...),
+			Names: []string{"purge"},
 		},
 	)
 }
 
 var (
 	requiredPermissions = []int{extendeddiscordpermissions.MANAGE_MESSAGES}
-
-	expectedPositionalArguments = []string{"1", "2"}
 )
 
-func run(ctx commands.CommandContext) error {
-	// command overloading
-	var arg1, arg1Exists = ctx.Arguments["1"]
-	if !arg1Exists {
-		return tracerr.Wrap(errors.New(fmt.Sprint(
-			commands.MissingArgumentErrorTemplate, "purge requires at least 1 argument")))
-	}
-
-	var arg2, arg2Exists = ctx.Arguments["2"]
-
-	var messageDeleteErr = ctx.Message.Delete()
-	if messageDeleteErr != nil {
-		return tracerr.Wrap(messageDeleteErr)
-	}
-
-	if !arg2Exists {
-		return runPurgeUntil(ctx, arg1)
-	}
-
-	return runPurgeFromTo(ctx, arg1, arg2)
-}
-
-func runPurgeUntil(ctx commands.CommandContext, untilID string) error {
+func runPurgeUntil(ctx commands.CommandContext, args ...string) error {
+	var untilID = args[0]
 	for {
 		var messages, messagesErr = ctx.Session.ChannelMessages(
 			ctx.Message.ChannelID, 100, "", untilID, "")
@@ -79,7 +58,10 @@ func runPurgeUntil(ctx commands.CommandContext, untilID string) error {
 	return tracerr.Wrap(ctx.Session.ChannelMessageDelete(ctx.Message.ChannelID, untilID))
 }
 
-func runPurgeFromTo(ctx commands.CommandContext, fromID string, untilID string) error {
+func runPurgeFromTo(ctx commands.CommandContext, args ...string) error {
+	var fromID = args[0]
+	var untilID = args[1]
+
 	var fromIDuint64, fromIDuint64Err = strconv.ParseUint(fromID, 10, 64)
 	if fromIDuint64Err != nil {
 		return tracerr.Wrap(fromIDuint64Err)
