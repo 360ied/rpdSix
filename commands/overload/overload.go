@@ -1,7 +1,6 @@
 package overload
 
 import (
-	"fmt"
 	"strings"
 
 	"rpdSix/commands"
@@ -16,7 +15,6 @@ func Builder(
 		var numberOfArguments = len(arguments)
 
 		for argumentIndex, argument := range arguments {
-			fmt.Println(argument)
 			if strings.HasPrefix(argument, commands.KeywordArgumentPrefix) {
 				numberOfArguments = argumentIndex
 				break
