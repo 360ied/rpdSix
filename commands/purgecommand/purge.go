@@ -55,7 +55,8 @@ func runPurgeUntil(ctx commands.CommandContext, args ...string) error {
 		untilID = messageIDs[len(messageIDs)-1]
 	}
 
-	return tracerr.Wrap(ctx.Session.ChannelMessageDelete(ctx.Message.ChannelID, untilID))
+	_ = ctx.Session.ChannelMessageDelete(ctx.Message.ChannelID, untilID)
+	return nil
 }
 
 func runPurgeFromTo(ctx commands.CommandContext, args ...string) error {
@@ -103,5 +104,6 @@ func runPurgeFromTo(ctx commands.CommandContext, args ...string) error {
 		untilID = messageIDs[len(messageIDs)-1]
 	}
 
-	return ctx.Session.ChannelMessageDelete(ctx.Message.ChannelID, untilID)
+	_ = ctx.Session.ChannelMessageDelete(ctx.Message.ChannelID, untilID)
+	return nil
 }
