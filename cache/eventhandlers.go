@@ -55,12 +55,7 @@ func RegisterEventHandlers(bot *discordgo.Session) {
 
 func channelCreateEventHandler(_ *discordgo.Session, event *discordgo.ChannelCreate) {
 	// a channel is created
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	guildUnion.Lock()
 	defer guildUnion.Unlock()
@@ -70,12 +65,7 @@ func channelCreateEventHandler(_ *discordgo.Session, event *discordgo.ChannelCre
 
 func channelDeleteEventHandler(_ *discordgo.Session, event *discordgo.ChannelDelete) {
 	// a channel is deleted
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	guildUnion.Lock()
 	defer guildUnion.Unlock()
@@ -93,12 +83,7 @@ func channelDeleteEventHandler(_ *discordgo.Session, event *discordgo.ChannelDel
 }
 
 func channelPinsUpdateEventHandler(_ *discordgo.Session, event *discordgo.ChannelPinsUpdate) {
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	// TODO: I think there's a way to hold the lock for less time, but I'm not so sure about it.
 	guildUnion.Lock()
@@ -113,12 +98,7 @@ func channelPinsUpdateEventHandler(_ *discordgo.Session, event *discordgo.Channe
 }
 
 func channelUpdateEventHandler(_ *discordgo.Session, event *discordgo.ChannelUpdate) {
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	// TODO: I think there's a way to hold the lock for less time, but I'm not so sure about it.
 	guildUnion.Lock()
@@ -168,12 +148,7 @@ func guildDeleteEventHandler(_ *discordgo.Session, event *discordgo.GuildDelete)
 
 func guildEmojisUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildEmojisUpdate) {
 	// emojis got updated
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	var emojiMap = map[string]*discordgo.Emoji{}
 
@@ -211,12 +186,7 @@ func guildIntegrationsUpdateEventHandler(*discordgo.Session, *discordgo.GuildInt
 
 func guildMemberAddEventHandler(_ *discordgo.Session, event *discordgo.GuildMemberAdd) {
 	// new user joined the guild, so don't need to check whether to update existing user or not
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	guildUnion.Lock()
 	defer guildUnion.Unlock()
@@ -226,12 +196,7 @@ func guildMemberAddEventHandler(_ *discordgo.Session, event *discordgo.GuildMemb
 
 func guildMemberRemoveEventHandler(_ *discordgo.Session, event *discordgo.GuildMemberRemove) {
 	// member left guild
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	// TODO: I think there's a way to hold the lock for less time, but I'm not so sure about it.
 	guildUnion.Lock()
@@ -251,12 +216,7 @@ func guildMemberRemoveEventHandler(_ *discordgo.Session, event *discordgo.GuildM
 
 func guildMemberUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildMemberUpdate) {
 	// existing member is updated
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	guildUnion.Lock()
 	defer guildUnion.Unlock()
@@ -285,12 +245,7 @@ func guildMembersChunkEventHandler(*discordgo.Session, *discordgo.GuildMembersCh
 
 func guildRoleCreateEventHandler(_ *discordgo.Session, event *discordgo.GuildRoleCreate) {
 	// a new role is created
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	guildUnion.Lock()
 	defer guildUnion.Unlock()
@@ -300,12 +255,7 @@ func guildRoleCreateEventHandler(_ *discordgo.Session, event *discordgo.GuildRol
 
 func guildRoleDeleteEventHandler(_ *discordgo.Session, event *discordgo.GuildRoleDelete) {
 	// a role is deleted
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	// TODO: I think there's a way to hold the lock for less time, but I'm not so sure about it.
 	guildUnion.Lock()
@@ -325,12 +275,7 @@ func guildRoleDeleteEventHandler(_ *discordgo.Session, event *discordgo.GuildRol
 
 func guildRoleUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildRoleUpdate) {
 	// existing role is updated
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	guildUnion.Lock()
 	defer guildUnion.Unlock()
@@ -348,12 +293,7 @@ func guildRoleUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildRol
 func guildUpdateEventHandler(_ *discordgo.Session, event *discordgo.GuildUpdate) {
 	// entire guild is updated
 	// but some elements are not included in the event
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.ID]
-	}()
+	var guildUnion = getGuildUnion(event.ID)
 
 	guildUnion.Lock()
 	defer guildUnion.Unlock()
@@ -583,12 +523,7 @@ func voiceServerUpdateEventHandler(session *discordgo.Session, event *discordgo.
 }
 
 func voiceStateUpdateEventHandler(_ *discordgo.Session, event *discordgo.VoiceStateUpdate) {
-	var guildUnion = func() cacheGuild {
-		Cache.GuildsRWMutex.RLock()
-		defer Cache.GuildsRWMutex.RUnlock()
-
-		return Cache.Guilds[event.GuildID]
-	}()
+	var guildUnion = getGuildUnion(event.GuildID)
 
 	guildUnion.Lock()
 	defer guildUnion.Unlock()
