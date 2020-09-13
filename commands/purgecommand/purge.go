@@ -82,7 +82,7 @@ func runPurgeFromTo(ctx commands.CommandContext, args ...string) error {
 		for _, message := range messages {
 			var messageIDuint64, messageIDuint64Err = strconv.ParseUint(message.ID, 10, 64)
 			if messageIDuint64Err != nil {
-				return messageIDuint64Err
+				return tracerr.Wrap(messageIDuint64Err)
 			}
 
 			if messageIDuint64 > fromIDuint64 {
