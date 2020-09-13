@@ -9,6 +9,7 @@ import (
 func Builder(
 	functions map[int]func(commands.CommandContext, ...string) error,
 ) func(commands.CommandContext) error {
+
 	return func(ctx commands.CommandContext) error {
 		var arguments = strings.Split(ctx.Message.Content, commands.StringSeparator)[1:]
 
