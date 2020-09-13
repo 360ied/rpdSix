@@ -14,7 +14,8 @@ import (
 // Builds a function that checks whether the command caller meets your permission requirements
 func Builder(
 	callBack func(commands.CommandContext) error,
-	requiredPermissions ...int) func(commands.CommandContext) error {
+	requiredPermissions ...int,
+) func(commands.CommandContext) error {
 
 	return func(ctx commands.CommandContext) error {
 		var authorMember, authorMemberErr = ctx.Message.AuthorMember()
