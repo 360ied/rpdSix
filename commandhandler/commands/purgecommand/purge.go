@@ -5,17 +5,17 @@ import (
 
 	"github.com/ztrue/tracerr"
 
-	"rpdSix/commands"
-	"rpdSix/commands/checkedrun"
-	"rpdSix/commands/overload"
+	"rpdSix/commandhandler"
+	"rpdSix/commandhandler/helpers/checkedrun"
+	"rpdSix/commandhandler/helpers/overload"
 	"rpdSix/helpers/extendeddiscord/extendeddiscordpermissions"
 )
 
 func Initialize() {
-	commands.AddCommand(
-		commands.Command{
+	commandhandler.AddCommand(
+		commandhandler.Command{
 			Run: checkedrun.Builder(
-				overload.Builder(map[int]func(commands.CommandContext, ...string) error{
+				overload.Builder(map[int]func(commandhandler.CommandContext, ...string) error{
 					1: runPurgeUntil,
 					2: runPurgeFromTo,
 				}), requiredPermissions...),
@@ -28,7 +28,7 @@ var (
 	requiredPermissions = []int{extendeddiscordpermissions.MANAGE_MESSAGES}
 )
 
-func runPurgeUntil(ctx commands.CommandContext, args ...string) error {
+func runPurgeUntil(ctx commandhandler.CommandContext, args ...string) error {
 	var untilID = args[0]
 	for {
 		var messages, messagesErr = ctx.Session.ChannelMessages(
@@ -59,7 +59,7 @@ func runPurgeUntil(ctx commands.CommandContext, args ...string) error {
 	return nil
 }
 
-func runPurgeFromTo(ctx commands.CommandContext, args ...string) error {
+func runPurgeFromTo(ctx commandhandler.CommandContext, args ...string) error {
 	var fromID = args[0]
 	var untilID = args[1]
 

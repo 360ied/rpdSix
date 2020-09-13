@@ -8,13 +8,13 @@ import (
 	"github.com/bwmarrin/discordgo"
 
 	"rpdSix/cache"
-	"rpdSix/commands"
-	"rpdSix/commands/bigemojicommand"
-	"rpdSix/commands/helpcommand"
-	"rpdSix/commands/pingcommand"
-	"rpdSix/commands/purgecommand"
-	"rpdSix/commands/saycommand"
-	"rpdSix/commands/voicechannelmoveallcommand"
+	"rpdSix/commandhandler"
+	"rpdSix/commandhandler/commands/bigemojicommand"
+	"rpdSix/commandhandler/commands/helpcommand"
+	"rpdSix/commandhandler/commands/pingcommand"
+	"rpdSix/commandhandler/commands/purgecommand"
+	"rpdSix/commandhandler/commands/saycommand"
+	"rpdSix/commandhandler/commands/voicechannelmoveallcommand"
 	"rpdSix/keepalive"
 )
 
@@ -35,7 +35,7 @@ func main() {
 	cache.RegisterEventHandlers(bot)
 
 	// init command map
-	commands.InitCommands()
+	commandhandler.InitCommands()
 	// register commands
 	pingcommand.Initialize()
 	saycommand.Initialize()
@@ -68,5 +68,5 @@ func ready(session *discordgo.Session, event *discordgo.Ready) {
 }
 
 func messageCreate(session *discordgo.Session, event *discordgo.MessageCreate) {
-	go commands.HandleMessage(session, event)
+	go commandhandler.HandleMessage(session, event)
 }

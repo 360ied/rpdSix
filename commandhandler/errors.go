@@ -1,4 +1,4 @@
-package commands
+package commandhandler
 
 const (
 	MissingArgumentErrorTemplate = "Commands MissingArgumentError, "

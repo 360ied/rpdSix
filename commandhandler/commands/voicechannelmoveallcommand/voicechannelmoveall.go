@@ -9,14 +9,14 @@ import (
 	"github.com/ztrue/tracerr"
 
 	"rpdSix/cache"
-	"rpdSix/commands"
-	"rpdSix/commands/checkedrun"
+	"rpdSix/commandhandler"
+	"rpdSix/commandhandler/helpers/checkedrun"
 	"rpdSix/helpers/extendeddiscord/extendeddiscordpermissions"
 )
 
 func Initialize() {
-	commands.AddCommand(
-		commands.Command{
+	commandhandler.AddCommand(
+		commandhandler.Command{
 			Run:                         checkedrun.Builder(run, requiredPermissions...),
 			Names:                       []string{"voicechannelmoveall", "vcmoveall", "vcmall", "vcma"},
 			ExpectedPositionalArguments: []string{destinationChannelArg},
@@ -34,7 +34,7 @@ var (
 	requiredPermissions = []int{extendeddiscordpermissions.MOVE_MEMBERS}
 )
 
-func run(ctx commands.CommandContext) error {
+func run(ctx commandhandler.CommandContext) error {
 
 	// var messageGuild, messageGuildErr = ctx.Message.Guild()
 	// if messageGuildErr != nil {
@@ -78,7 +78,7 @@ foundVoiceState:
 
 	var destinationChannelID, destinationChannelArgExists = ctx.Arguments[destinationChannelArg]
 	if !destinationChannelArgExists {
-		return tracerr.Wrap(errors.New(fmt.Sprint(commands.MissingArgumentErrorTemplate,
+		return tracerr.Wrap(errors.New(fmt.Sprint(commandhandler.MissingArgumentErrorTemplate,
 			"Destination Channel ID not found!")))
 	}
 

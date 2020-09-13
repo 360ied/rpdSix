@@ -15,15 +15,15 @@ import (
 	"github.com/ztrue/tracerr"
 	_ "golang.org/x/image/webp"
 
-	"rpdSix/commands"
-	"rpdSix/commands/checkedrun"
+	"rpdSix/commandhandler"
+	"rpdSix/commandhandler/helpers/checkedrun"
 	"rpdSix/helpers/extendeddiscord/extendeddiscordpermissions"
 	"rpdSix/helpers/extendedimage"
 )
 
 func Initialize() {
-	commands.AddCommand(
-		commands.Command{
+	commandhandler.AddCommand(
+		commandhandler.Command{
 			Run:                         checkedrun.Builder(run, requiredPermissions...),
 			Names:                       []string{"bigemoji"},
 			ExpectedPositionalArguments: []string{emojiNameArg, gridSizeArg},
@@ -41,7 +41,7 @@ var (
 	requiredPermissions = []int{extendeddiscordpermissions.MANAGE_EMOJIS}
 )
 
-func run(ctx commands.CommandContext) error {
+func run(ctx commandhandler.CommandContext) error {
 	if len(ctx.Message.Attachments) == 0 {
 		var _, err3 = ctx.Message.Reply("No attachments were found!")
 		return tracerr.Wrap(err3)

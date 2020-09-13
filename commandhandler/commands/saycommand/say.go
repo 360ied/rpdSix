@@ -3,12 +3,12 @@ package saycommand
 import (
 	"github.com/ztrue/tracerr"
 
-	"rpdSix/commands"
+	"rpdSix/commandhandler"
 )
 
 func Initialize() {
-	commands.AddCommand(
-		commands.Command{
+	commandhandler.AddCommand(
+		commandhandler.Command{
 			Run:                         run,
 			Names:                       []string{"say"},
 			ExpectedPositionalArguments: []string{toSayArg},
@@ -20,7 +20,7 @@ const (
 	toSayArg = "toSay"
 )
 
-func run(ctx commands.CommandContext) error {
+func run(ctx commandhandler.CommandContext) error {
 	var _, err = ctx.Message.Reply(ctx.Arguments[toSayArg])
 	return tracerr.Wrap(err)
 }

@@ -6,12 +6,12 @@ import (
 
 	"github.com/ztrue/tracerr"
 
-	"rpdSix/commands"
+	"rpdSix/commandhandler"
 )
 
 func Initialize() {
-	commands.AddCommand(
-		commands.Command{
+	commandhandler.AddCommand(
+		commandhandler.Command{
 			Run:                         run,
 			Names:                       []string{"help"},
 			ExpectedPositionalArguments: []string{commandArg},
@@ -23,10 +23,10 @@ const (
 	commandArg = "command"
 )
 
-func run(ctx commands.CommandContext) error {
+func run(ctx commandhandler.CommandContext) error {
 	if _, exists := ctx.Arguments[commandArg]; exists {
 		// show specific information about a command
-		var command, exists_ = commands.Commands[strings.ToLower(ctx.Arguments[commandArg])]
+		var command, exists_ = commandhandler.Commands[strings.ToLower(ctx.Arguments[commandArg])]
 		if exists_ {
 			// lmao these variable names
 
@@ -70,7 +70,7 @@ func run(ctx commands.CommandContext) error {
 	} else {
 		// list commands
 		var outputStr = "Commands:\n"
-		for commandName := range commands.Commands {
+		for commandName := range commandhandler.Commands {
 			outputStr += fmt.Sprintf("`%v`, ", commandName)
 		}
 		outputStr = outputStr[:len(outputStr)-len(", ")]

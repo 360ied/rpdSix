@@ -6,18 +6,18 @@ import (
 
 	"github.com/ztrue/tracerr"
 
-	"rpdSix/commands"
+	"rpdSix/commandhandler"
 	"rpdSix/helpers/extendeddiscord/extendeddiscordobjects"
 	"rpdSix/helpers/extendeddiscord/extendeddiscordpermissions"
 )
 
 // Builds a function that checks whether the command caller meets your permission requirements
 func Builder(
-	callBack func(commands.CommandContext) error,
+	callBack func(commandhandler.CommandContext) error,
 	requiredPermissions ...int,
-) func(commands.CommandContext) error {
+) func(commandhandler.CommandContext) error {
 
-	return func(ctx commands.CommandContext) error {
+	return func(ctx commandhandler.CommandContext) error {
 		var authorMember, authorMemberErr = ctx.Message.AuthorMember()
 		if authorMemberErr != nil {
 			return tracerr.Wrap(authorMemberErr)
