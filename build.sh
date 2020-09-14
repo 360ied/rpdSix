@@ -37,7 +37,7 @@ platforms=(
 for platform in "${platforms[@]}"; do
 
   # split platform string by /
-  platform_split=${platform//\// }
+  IFS="/" read -r -a platform_split <<<"$platform"
 
   GOOS=${platform_split[0]}
   GOARCH=${platform_split[1]}
