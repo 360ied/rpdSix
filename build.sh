@@ -45,7 +45,7 @@ for platform in "${platforms[@]}"; do
   output_name="build/rpdSix-$GOOS-$GOARCH"
 
   if [ "$GOOS" = "windows" ]; then
-    output_name+='.exe'
+    output_name+=".exe"
   fi
 
   # use subshells to execute all build commands simultaneously
@@ -53,7 +53,7 @@ for platform in "${platforms[@]}"; do
     echo "Building for $platform"
 
     if ! env GOOS="$GOOS" GOARCH="$GOARCH" go build -o $output_name; then
-      echo 'An error has occurred! Aborting the script execution...'
+      echo "An error has occurred! Aborting the script execution..."
       exit 1
     fi
 
