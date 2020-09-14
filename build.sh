@@ -34,6 +34,7 @@ platforms=(
   "windows/amd64"
 )
 
+# iterate through platforms
 for platform in "${platforms[@]}"; do
   # split platform string by /
   IFS="/" read -r -a platform_split <<<"$platform"
