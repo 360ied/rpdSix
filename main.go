@@ -23,9 +23,8 @@ func main() {
 	go keepalive.KeepAlive()
 
 	var bot, newBotErr = discordgo.New("Bot " + os.Getenv("TOKEN"))
-
 	if newBotErr != nil {
-		panic(newBotErr)
+		log.Fatalln(newBotErr)
 	}
 
 	// register events
