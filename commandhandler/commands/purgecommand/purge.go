@@ -74,6 +74,7 @@ func runPurgeFromTo(ctx commandhandler.CommandContext, args ...string) error {
 		if messagesErr != nil {
 			return tracerr.Wrap(messagesErr)
 		}
+
 		if len(messages) == 0 {
 			break
 		}
@@ -88,6 +89,7 @@ func runPurgeFromTo(ctx commandhandler.CommandContext, args ...string) error {
 			if messageIDuint64 > fromIDuint64 {
 				continue
 			}
+
 			messageIDs = append(messageIDs, message.ID)
 		}
 
