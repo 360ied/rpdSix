@@ -22,10 +22,10 @@ func main() {
 	// so that repl.it won't exit after the page is closed
 	go keepalive.KeepAlive()
 
-	var bot, err = discordgo.New("Bot " + os.Getenv("TOKEN"))
+	var bot, newBotErr = discordgo.New("Bot " + os.Getenv("TOKEN"))
 
-	if err != nil {
-		panic(err)
+	if newBotErr != nil {
+		panic(newBotErr)
 	}
 
 	// register events
@@ -44,10 +44,9 @@ func main() {
 	voicechannelmoveallcommand.Initialize()
 	purgecommand.Initialize()
 
-	err = bot.Open()
-
-	if err != nil {
-		log.Fatalln("Error opening Discord session: ", err)
+	var botOpenErr = bot.Open()
+	if botOpenErr != nil {
+		log.Fatalln("Error opening Discord session: ", newBotErr)
 	}
 
 	fmt.Println("Bot is now running.")
@@ -60,9 +59,9 @@ func main() {
 }
 
 func ready(session *discordgo.Session, event *discordgo.Ready) {
-	var err = session.UpdateStatus(0, "golang")
-	if err != nil {
-		fmt.Println("Error updating status: ", err)
+	var sessionUpdateStatusErr = session.UpdateStatus(0, "golang")
+	if sessionUpdateStatusErr != nil {
+		fmt.Println("Error updating status: ", sessionUpdateStatusErr)
 	}
 	fmt.Println("Logged in as user " + session.State.User.ID)
 }
