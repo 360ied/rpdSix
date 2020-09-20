@@ -49,13 +49,12 @@ func main() {
 		log.Fatalln("Error opening Discord session: ", newBotErr)
 	}
 
+	defer bot.Close()
+
 	fmt.Println("Bot is now running.")
 
 	// wait forever
 	select {}
-
-	// unreachable code
-	// bot.Close()
 }
 
 func ready(session *discordgo.Session, event *discordgo.Ready) {
