@@ -22,6 +22,7 @@ func Builder(
 		if authorMemberErr != nil {
 			return tracerr.Wrap(authorMemberErr)
 		}
+
 		var extendedAuthorMember = extendeddiscordobjects.ExtendMember(authorMember, ctx.Session)
 
 		extendedAuthorMember.GuildID = ctx.Message.GuildID // fix

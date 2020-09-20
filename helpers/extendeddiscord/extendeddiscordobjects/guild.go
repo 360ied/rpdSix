@@ -27,6 +27,7 @@ func (guild *ExtendedGuild) GetRole(roleID string) (*discordgo.Role, error) {
 			return role, nil
 		}
 	}
+
 	return nil, errors.New(fmt.Sprint(helpers.RoleNotFoundErrorTemplate,
 		"Role ", roleID, " not found in guild ", guild.ID))
 }
@@ -40,6 +41,7 @@ func (guild *ExtendedGuild) GetRoles(roleIDs map[string]struct{}) (roles []*disc
 			return nil, guildRolesErr
 		}
 	}
+
 	for _, role := range guild.Roles {
 		var _, contains = roleIDs[role.ID]
 		if contains {
@@ -55,6 +57,7 @@ func (guild *ExtendedGuild) GetRolesSlice(roleIDs []string) (roles []*discordgo.
 	for _, roleID := range roleIDs {
 		roleIDMap[roleID] = struct{}{}
 	}
+
 	return guild.GetRoles(roleIDMap)
 }
 
@@ -66,5 +69,6 @@ func (guild *ExtendedGuild) GetMembers() (members []*discordgo.Member, err error
 			return nil, err
 		}
 	}
+
 	return members, nil
 }
